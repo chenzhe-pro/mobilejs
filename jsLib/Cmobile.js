@@ -20,7 +20,7 @@
 	        	var imgelem=doc.createElement("img");
 	        	imgelem.src=urlarray[i];
 	        	imgelem.width=obj.width;
-	        	imgelem.height=obj.height;
+	        	imgelem.height=obj.height;//
 	        };
         };
         this.lazyLoad=function(elemarray,lazytype,lazyurl){
