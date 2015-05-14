@@ -3,6 +3,7 @@
  * 自用。欢迎指正不足。
  **/
 (function(doc,win){
+    var indexOfSlide=0;
     function mobile(){
         //sds
         this.autochange=function(maxWidth,originSize){
@@ -11,17 +12,56 @@
             document.querySelector("html").style.fontSize=Standard+"px";
             return;
         };
-        this.slide=function(elem,number,urlarray,obj){//样式自己添加
-        	elem.style.width=obj.width*+"px";
-        	elem.style.height=obj.height+"px";
-        	elem.style.position="";
-        	for (var i = 0； i < number; i++) {
-        		var slideelem=doc.createElement("span");
-	        	var imgelem=doc.createElement("img");
-	        	imgelem.src=urlarray[i];
-	        	imgelem.width=obj.width;
-	        	imgelem.height=obj.height;//
+        this.slide=function(elem,number,urlarray,obj,timestr,auto,autotime){//样式自己添加
+            var div=doc.createElement("div");
+            elem.style.overflow="hidden";
+            div.style.display="-webkit-box";
+            div.style.webkitTransition="-webkit-transform "+timestr;
+            var imgstr="",oldX;
+        	for (var i = 0; i < number; i++) {
+                imgstr+="<img src=\""+urlarray[i]+"\" alt=\"\" style=\"display: block;width:"+obj.width+"px;height:"+obj.height+"px;\" />"
 	        };
+            div.innerHTML=imgstr;
+            elem.appendChild(div);
+
+            elem.addEventListener("touchstart",function(e){
+                e.preventDefault();
+                var touch= e.changedTouches[0];
+                oldX=touch.pageX;
+            });
+            elem.addEventListener("touchend",function(e){
+                e.preventDefault();
+                var touch= e.changedTouches[0];
+                if(oldX-touch.pageX>10)//right
+                {
+                    fnext();
+                }
+                else if(touch.pageX-oldX>10)
+                {
+
+                    fprev();
+                }
+            });
+            function fprev()
+            {
+                if(indexOfSlide!==0)
+                {
+                    indexOfSlide--;
+                    div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
+                }
+            }
+            function fnext()
+            {
+                if(indexOfSlide!==number-1)
+                {
+                    indexOfSlide++;
+                    div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
+                }
+            }
+            auto&&setInterval(function(){
+                indexOfSlide!==number-1&&fnext();
+            },autotime);
+
         };
         this.lazyLoad=function(elemarray,lazytype,lazyurl){
             function pagefun()
