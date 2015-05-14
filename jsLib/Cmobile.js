@@ -28,6 +28,8 @@
                 e.preventDefault();
                 var touch= e.changedTouches[0];
                 oldX=touch.pageX;
+                // auto=false;
+                clearInterval(tt);
             });
             elem.addEventListener("touchend",function(e){
                 e.preventDefault();
@@ -41,12 +43,19 @@
 
                     fprev();
                 }
+                setInterval(autoSlide,autotime);
             });
-            function fprev()
+            function fprev(bool)
             {
-                if(indexOfSlide!==0)
+                if(!bool)
+                    if(indexOfSlide!==0)
+                    {
+                        indexOfSlide--;
+                        div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
+                    }
+                else
                 {
-                    indexOfSlide--;
+                    indexOfSlide=0;
                     div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
                 }
             }
@@ -58,9 +67,11 @@
                     div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
                 }
             }
-            auto&&setInterval(function(){
+            function autoSlide(){
                 indexOfSlide!==number-1&&fnext();
-            },autotime);
+                indexOfSlide===number-1&&fprev(true);
+            }
+            var tt=auto&&setInterval(autoSlide,autotime);
 
         };
         this.lazyLoad=function(elemarray,lazytype,lazyurl){
@@ -85,9 +96,7 @@
                     for(var j=0;j<elemarray.length;j++)
                     {
                         if(elemarray[j].tagName.indexOf("IMG")>-1)
-                        {
                             elemarray[j].src=arr[j];
-                        }
                         else
                             elemarray[j].style.backgroundImage=arr[j];
                     }
