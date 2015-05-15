@@ -13,22 +13,31 @@
             return;
         };
         this.slide=function(elem,number,urlarray,obj,timestr,auto,autotime){//样式自己添加
-            var div=doc.createElement("div");
+            var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX;
             elem.style.overflow="hidden";
+            elem.style.position="relative";
             div.style.display="-webkit-box";
             div.style.webkitTransition="-webkit-transform "+timestr;
-            var imgstr="",oldX;
+
+            index.innerHTML="<span style='padding-right: 15px;'><span class='index'></span>/"+number+"</span>";
+            index.style.width=obj.width+"px";
+            index.style.textAlign="right";
+            index.style.position="absolute";
+            index.style.bottom="0";
+            index.style.color="white";
+            index.style.paddingBottom="5px";
         	for (var i = 0; i < number; i++) {
                 imgstr+="<img src=\""+urlarray[i]+"\" alt=\"\" style=\"display: block;width:"+obj.width+"px;height:"+obj.height+"px;\" />"
 	        };
             div.innerHTML=imgstr;
             elem.appendChild(div);
-
+            elem.appendChild(index);
+            index=doc.querySelector(".index");
+            index.innerHTML=indexOfSlide+1;
             elem.addEventListener("touchstart",function(e){
                 e.preventDefault();
                 var touch= e.changedTouches[0];
                 oldX=touch.pageX;
-                // auto=false;
                 clearInterval(tt);
             });
             elem.addEventListener("touchend",function(e){
@@ -43,20 +52,24 @@
 
                     fprev();
                 }
-                setInterval(autoSlide,autotime);
+                tt=auto&&setInterval(autoSlide,autotime);
             });
             function fprev(bool)
             {
                 if(!bool)
-                    if(indexOfSlide!==0)
+                {
+                    if (indexOfSlide !== 0)
                     {
+                        index.innerHTML=indexOfSlide;
                         indexOfSlide--;
-                        div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
+                        div.style.webkitTransform = "translate(-" + obj.width * indexOfSlide + "px,0px)";
                     }
+                }
                 else
                 {
                     indexOfSlide=0;
                     div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
+                    index.innerHTML="1";
                 }
             }
             function fnext()
@@ -65,14 +78,16 @@
                 {
                     indexOfSlide++;
                     div.style.webkitTransform="translate(-"+obj.width*indexOfSlide+"px,0px)";
+                    index.innerHTML=indexOfSlide+1;
                 }
             }
             function autoSlide(){
-                indexOfSlide!==number-1&&fnext();
-                indexOfSlide===number-1&&fprev(true);
+                if(indexOfSlide!==number-1)
+                    fnext();
+                else
+                    fprev(true);
             }
             var tt=auto&&setInterval(autoSlide,autotime);
-
         };
         this.lazyLoad=function(elemarray,lazytype,lazyurl){
             function pagefun()
@@ -122,8 +137,11 @@
         this.all=function(selector){
             return doc.querySelectorAll(selector);
         };
-
     };
+    function mobileObj()
+    {
+
+    }
     function BasicInfo(doc,win)
     {
         this.UA=win.navigator.userAgent;
