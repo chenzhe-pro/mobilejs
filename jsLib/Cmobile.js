@@ -131,16 +131,24 @@
             return doc.querySelector(selector);
         };
         this.one=function(selector){
-            var one=doc.querySelectorAll(selector);
-            return new Array(one[0]);
+            var one=doc.querySelector(selector);
+            var arr=new Array(one);
+            InitAPIFunction(arr);
+            return new Array(one);
         };
         this.all=function(selector){
-            return doc.querySelectorAll(selector);
+            var arr=doc.querySelectorAll(selector);
+            InitAPIFunction(arr);
+            return new Array(arr);
         };
     };
-    function mobileObj()
+    function InitAPIFunction(obj)
     {
-
+        var arr=obj;
+        Array.prototype.css=function(){
+            
+            alert(arr.length);
+        };
     }
     function BasicInfo(doc,win)
     {
@@ -174,5 +182,6 @@
     var mobile=new mobile();
     mobile.readOnly=true;
     win.mobile=mobile;
+    // MobileObj.prototype=mobile;
 })(document,window);
 
