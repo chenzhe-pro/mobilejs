@@ -6,7 +6,25 @@
     var indexOfSlide=0;
     function mobile(){
         //sds
-        this.autochange=function(maxWidth,originSize){
+        this.dom=function(selector){//初级选择器,只兼容webkit浏览器
+            return doc.querySelector(selector);
+        };
+        this.one=function(selector){
+            var one,arr;
+            if(selector instanceof Object)
+                one=selector;
+            else
+                one=doc.querySelector(selector);
+            arr=new Array(one);
+            InitAPIFunction(arr);
+            return new Array(one);
+        };
+        this.all=function(selector){
+            var arr=doc.querySelectorAll(selector);
+            InitAPIFunction(arr);
+            return new Array(arr);
+        };
+        this.autoChange=function(maxWidth,originSize){
             var width=document.documentElement.clientWidth;
             var Standard=originSize/(maxWidth*1.0/width);
             document.querySelector("html").style.fontSize=Standard+"px";
@@ -16,16 +34,11 @@
             var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX;
             elem.style.overflow="hidden";
             elem.style.position="relative";
+            // elem.style.cssText="overflow:hidden;position:relative";
             div.style.display="-webkit-box";
             div.style.webkitTransition="-webkit-transform "+timestr;
-
+            this.one(index).css1("width:"+obj.width+"px;text-align:right;position:absolute;bottom:0;color:white;padding-bottom:5px");
             index.innerHTML="<span style='padding-right: 15px;'><span class='index'></span>/"+number+"</span>";
-            index.style.width=obj.width+"px";
-            index.style.textAlign="right";
-            index.style.position="absolute";
-            index.style.bottom="0";
-            index.style.color="white";
-            index.style.paddingBottom="5px";
         	for (var i = 0; i < number; i++) {
                 imgstr+="<img src=\""+urlarray[i]+"\" alt=\"\" style=\"display: block;width:"+obj.width+"px;height:"+obj.height+"px;\" />"
 	        };
@@ -125,29 +138,70 @@
             }
             lazytype==="page"&&pagefun();
             lazytype==="slide"&&slidefun();
-
         };
-        this.dom=function(selector){//初级选择器,只兼容webkit浏览器
-            return doc.querySelector(selector);
-        };
-        this.one=function(selector){
-            var one=doc.querySelector(selector);
-            var arr=new Array(one);
-            InitAPIFunction(arr);
-            return new Array(one);
-        };
-        this.all=function(selector){
-            var arr=doc.querySelectorAll(selector);
-            InitAPIFunction(arr);
-            return new Array(arr);
+        this.countDown=function(nowdate,enddate,showobj){//样式自己添加
+            nowdate=nowdate.valueOf();
+            enddate=enddate.valueOf();
+            var lasttime=enddate-nowdate;
+            var lastd=parseInt(lasttime/(1000*60*60*24));
+            var lasth=parseInt(lasttime/(1000*60*60)-lastd*24);
+            var lastm=parseInt(lasttime/(1000*60)-lastd*24*60-lasth*60);
+            var lasts=parseInt(lasttime/(1000)-lastd*24*60*60-lasth*60*60-lastm*60);
+            if(Math.floor(lastd/10)===0)
+            {
+                lastd="0"+lastd;
+            }
+            if(Math.floor(lasth/10)===0)
+            {
+                lasth="0"+lasth;
+            }
+            if(Math.floor(lastm/10)===0)
+            {
+                lastm="0"+lastm;
+            }if(Math.floor(lasts/10)===0)
+            {
+                lasts="0"+lasts;
+            }
+            if(!showobj)
+            {
+                this.dom(".day").innerHTML=lastd+":";
+                this.dom(".hour").innerHTML=lasth+":";
+                this.dom(".minute").innerHTML=lastm+":";
+                this.dom(".second").innerHTML=lasts;
+            }
+            else
+            {
+                if(showobj.day)
+                    this.dom(".day").innerHTML=lastd+":";
+                if(showobj.hour)
+                    this.dom(".hour").innerHTML=lasth+":";
+                if(showobj.min)
+                    this.dom(".minute").innerHTML=lastm+":";
+                if(showobj.second)
+                    this.dom(".second").innerHTML=lasts;
+            }
         };
     };
     function InitAPIFunction(obj)
     {
         var arr=obj;
-        Array.prototype.css=function(){
+        Array.prototype.css=function(cssobj){
+            var cssstr="";
+            for(var i=0;i<arr.length;i++)
+            {
+                for(var name in cssobj)
+                {
+                    cssstr+=(name+":"+cssobj[name]+";");
+                }
+                arr[i].style.cssText=arr[i].getAttribute("style")?arr[i].getAttribute("style")+cssstr:cssstr;
+            }
             
-            alert(arr.length);
+        };
+        Array.prototype.css1=function(cssstr){
+            for(var i=0;i<arr.length;i++)
+            {
+                arr[i].style.cssText=arr[i].getAttribute("style")?arr[i].getAttribute("style")+cssstr:cssstr;
+            }
         };
     }
     function BasicInfo(doc,win)
