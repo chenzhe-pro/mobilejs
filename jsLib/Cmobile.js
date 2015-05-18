@@ -3,7 +3,7 @@
  * 自用。欢迎指正不足。
  **/
 (function(doc,win){
-    var indexOfSlide=0;
+    var indexOfSlide=0,initflg=false;
     function mobile(){
         //sds
         this.dom=function(selector){//初级选择器,只兼容webkit浏览器
@@ -16,13 +16,17 @@
             else
                 one=doc.querySelector(selector);
             arr=new Array(one);
-            InitAPIFunction(arr);
+            if (!initflg) {initflg=InitAPIFunction(arr);};
             return new Array(one);
         };
         this.all=function(selector){
-            var arr=doc.querySelectorAll(selector);
-            InitAPIFunction(arr);
-            return new Array(arr);
+            var arr=doc.querySelectorAll(selector),newarr=new Array();
+            if (!initflg) {initflg=InitAPIFunction(arr);};
+            for(var i=0;i<arr.length;i++)
+            {
+                newarr.push(arr[i]);
+            }
+            return  newarr;
         };
         this.autoChange=function(maxWidth,originSize){
             var width=document.documentElement.clientWidth;
@@ -181,6 +185,9 @@
                     this.dom(".second").innerHTML=lasts;
             }
         };
+        this.loadMore=function(){
+            
+        };
     };
     function InitAPIFunction(obj)
     {
@@ -203,6 +210,7 @@
                 arr[i].style.cssText=arr[i].getAttribute("style")?arr[i].getAttribute("style")+cssstr:cssstr;
             }
         };
+        return true;
     }
     function BasicInfo(doc,win)
     {
