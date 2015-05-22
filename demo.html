@@ -2,20 +2,40 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8" mobile="true">
-    <title>Demo for mobile.js</title>
+    <title>The Demo for Cmobile.js</title>
     <script type="text/javascript" src="jsLib/Cmobile.js"></script>
     <script type="text/javascript" src="js/demo.js"></script>
     <style type="text/css">
-        .slide{width: 300px;height: 150px;margin: 0 auto;}
+        body{font-family: "Microsoft YaHei"}
+        body>div{border:1px solid gray;margin-top: 10px;}
+        .slide{width: 300px;height: 150px;margin: 10px auto;}
+        p{width: 300px;margin: 0 auto;}
+        .countdown{margin: 10px auto;}
+        .countdown span{background-color: gray;display: inline-block;width: 30px;height: 30px;border-radius: 10px 10px;text-align: center;line-height: 30px;}
     </style>
 </head>
 <body>
-    <p>slide</p>
-    <div class="slide"></div>
-    <script type="text/javascript">
-        var area=document.querySelector(".slide");
-        var urlarr=["http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg"];
-        mobile.slide(area,3,urlarr,{"width":300,"height":150},"0.8s",true,3000);
-    </script>
+    <p style="font-size:20px">The Demo for Cmobile.js</p>
+    <div>
+        <p>The Demo For Slide Component </p>
+        <div class="slide"></div>
+        <script type="text/javascript">
+            var area=document.querySelector(".slide");
+            var urlarr=["http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg"];
+            mobile.slide(area,3,urlarr,{"width":300,"height":150},"0.8s",true,3000);
+        </script>
+    </div>
+    <div>
+        <p>The Demo For CountDown Component </p>
+        <div class="countdown">
+            <span class="day"></span>:
+            <span class="hour"></span>:
+            <span class="minute"></span>:
+            <span class="second"></span>
+        </div>
+        <script type="text/javascript">
+            mobile.countDown(new Date(2015,12,30,00,00),{"day":false,"hour":true,"minute":true,"second":true});
+        </script>
+    </div>
 </body>
 </html>

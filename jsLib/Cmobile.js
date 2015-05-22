@@ -11,17 +11,19 @@
         };
         this.one=function(selector){
             var one,arr;
-            if(selector instanceof Object)
+            if(selector instanceof Node)
                 one=selector;
             else
                 one=doc.querySelector(selector);
             arr=new Array(one);
-            if (!initflg) {initflg=InitAPIFunction(arr);};
-            return new Array(one);
+            // if (!initflg) {initflg=InitAPIFunction(arr,true);};
+            InitAPIFunction(arr);
+            return arr;
         };
         this.all=function(selector){
             var arr=doc.querySelectorAll(selector),newarr=new Array();
-            if (!initflg) {initflg=InitAPIFunction(arr);};
+            // if (!initflg) {initflg=InitAPIFunction(arr);};
+            InitAPIFunction(arr);
             for(var i=0;i<arr.length;i++)
             {
                 newarr.push(arr[i]);
@@ -66,7 +68,6 @@
                 }
                 else if(touch.pageX-oldX>10)
                 {
-
                     fprev();
                 }
                 tt=auto&&setInterval(autoSlide,autotime);
@@ -136,81 +137,95 @@
                 });
                 return;
             }
-            function slidefun()
-            {
-
-            }
             lazytype==="page"&&pagefun();
             lazytype==="slide"&&slidefun();
         };
-        this.countDown=function(nowdate,enddate,showobj){//样式自己添加
-            nowdate=nowdate.valueOf();
-            enddate=enddate.valueOf();
-            var lasttime=enddate-nowdate;
-            var lastd=parseInt(lasttime/(1000*60*60*24));
-            var lasth=parseInt(lasttime/(1000*60*60)-lastd*24);
-            var lastm=parseInt(lasttime/(1000*60)-lastd*24*60-lasth*60);
-            var lasts=parseInt(lasttime/(1000)-lastd*24*60*60-lasth*60*60-lastm*60);
-            if(Math.floor(lastd/10)===0)
-            {
-                lastd="0"+lastd;
-            }
-            if(Math.floor(lasth/10)===0)
-            {
-                lasth="0"+lasth;
-            }
-            if(Math.floor(lastm/10)===0)
-            {
-                lastm="0"+lastm;
-            }if(Math.floor(lasts/10)===0)
-            {
-                lasts="0"+lasts;
-            }
-            if(!showobj)
-            {
-                this.dom(".day").innerHTML=lastd+":";
-                this.dom(".hour").innerHTML=lasth+":";
-                this.dom(".minute").innerHTML=lastm+":";
-                this.dom(".second").innerHTML=lasts;
-            }
-            else
-            {
-                if(showobj.day)
-                    this.dom(".day").innerHTML=lastd+":";
-                if(showobj.hour)
-                    this.dom(".hour").innerHTML=lasth+":";
-                if(showobj.min)
-                    this.dom(".minute").innerHTML=lastm+":";
-                if(showobj.second)
-                    this.dom(".second").innerHTML=lasts;
-            }
+        this.countDown=function(enddate,showobj){//样式自己添加
+            var obj=this;
+            function timeout(){
+                // this;
+                var nowdate=new Date();
+                var lasttime=enddate.valueOf()-nowdate.valueOf();
+                var lastd=parseInt(lasttime/(1000*60*60*24));
+                var lasth=parseInt(lasttime/(1000*60*60)-lastd*24);
+                var lastm=parseInt(lasttime/(1000*60)-lastd*24*60-lasth*60);
+                var lasts=parseInt(lasttime/(1000)-lastd*24*60*60-lasth*60*60-lastm*60);
+                if(Math.floor(lastd/10)===0)
+                {
+                    lastd="0"+lastd;
+                }
+                if(Math.floor(lasth/10)===0)
+                {
+                    lasth="0"+lasth;
+                }
+                if(Math.floor(lastm/10)===0)
+                {
+                    lastm="0"+lastm;
+                }if(Math.floor(lasts/10)===0)
+                {
+                    lasts="0"+lasts;
+                }
+                if(!showobj)
+                {
+                    obj.dom(".day").innerHTML=lastd;
+                    obj.dom(".hour").innerHTML=lasth;
+                    obj.dom(".minute").innerHTML=lastm;
+                    obj.dom(".second").innerHTML=lasts;
+                }
+                else
+                {
+                    if(showobj.day)
+                        obj.dom(".day").innerHTML=lastd;
+                    if(showobj.hour)
+                        obj.dom(".hour").innerHTML=lasth;
+                    if(showobj.minute)
+                        obj.dom(".minute").innerHTML=lastm;
+                    if(showobj.second)
+                        obj.dom(".second").innerHTML=lasts;
+                }
+            };
+            setInterval(timeout,1000);
         };
-        this.loadMore=function(){
+        this.loadMore=function(configobj){
             
         };
     };
     function InitAPIFunction(obj)
     {
-        var arr=obj;
         Array.prototype.css=function(cssobj){
             var cssstr="";
-            for(var i=0;i<arr.length;i++)
+            for(var i=0;i<obj.length;i++)
             {
                 for(var name in cssobj)
                 {
                     cssstr+=(name+":"+cssobj[name]+";");
                 }
-                arr[i].style.cssText=arr[i].getAttribute("style")?arr[i].getAttribute("style")+cssstr:cssstr;
+                obj[i].style.cssText=obj[i].getAttribute("style")?obj[i].getAttribute("style")+cssstr:cssstr;
             }
-            
+            return obj;
         };
         Array.prototype.css1=function(cssstr){
-            for(var i=0;i<arr.length;i++)
+            for(var i=0;i<obj.length;i++)
             {
-                arr[i].style.cssText=arr[i].getAttribute("style")?arr[i].getAttribute("style")+cssstr:cssstr;
+                obj[i].style.cssText=obj[i].getAttribute("style")?obj[i].getAttribute("style")+cssstr:cssstr;
+            }
+            return obj;
+        };
+        Array.prototype.addClass=function(classstr){
+            for(var i=0;i<obj.length;i++)
+            {
+                obj[i].className=obj[i].className.indexOf(classstr)>-1?obj[i].className:obj[i].className+" "+classstr;
+                obj[i].className=obj[i].className.trim();
+            }
+            return obj;
+        };
+        Array.prototype.removeClass=function(classstr){
+            for(var i=0;i<obj.length;i++)
+            {
+                obj[i].className=obj[i].className?obj[i].className.indexOf(classstr)>-1?obj[i].className.replace(classstr,"").trim():obj[i].className:"";
             }
         };
-        return true;
+        return;
     }
     function BasicInfo(doc,win)
     {
@@ -239,8 +254,8 @@
         };
         this.f();
     }
-    BasicInfo.prototype=new mobileCommon();
-    mobile.prototype=new BasicInfo(doc,win);
+    mobile.prototype.mobilecommon=new mobileCommon();
+    mobile.prototype.basicinfo=new BasicInfo(doc,win);
     var mobile=new mobile();
     mobile.readOnly=true;
     win.mobile=mobile;
