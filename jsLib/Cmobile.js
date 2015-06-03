@@ -189,6 +189,45 @@
         this.loadMore=function(configobj){
             
         };
+        this.pop=function(configObj){
+            var obj=this;
+            var bodywidth=document.documentElement.clientWidth;
+            if(!document.querySelector(".pop_bg"))
+            {
+                var div=document.createElement('div');
+                div.className="pop_bg";
+                var stylestr=configObj.opacity?configObj.opacity/100 :.5;
+                div.setAttribute("style","width: 100%;height: 100%;position: fixed;top:0;left: 0;z-index:60;margin:0;background-color: rgba(168,173,176,"+stylestr+");");
+                document.querySelector("body").appendChild(div);
+            }
+            //if(!multi)
+            //    $('.pop').addClass("none");
+            configObj.element.style.display=configObj.elementDisplay;
+            var havepoplist=document.querySelectorAll(".havePop");
+            if(havepoplist.length>0)
+                obj.one(configObj.element).css1("position: fixed;z-index:"+(parseInt(havepoplist[havepoplist.length-1].style.zIndex)+1)+";left:"+(bodywidth-configObj.element.offsetWidth)/2+"px;top:"+configObj.top+"px");
+            else
+                obj.one(configObj.element).css1("position: fixed;z-index:65;left:"+(bodywidth-configObj.element.offsetWidth)/2+"px;top:"+configObj.top+"px");
+            obj.one(configObj.element).addClass("havePop");
+            if(configObj.closeElement)
+            {
+                configObj.closeElement.onclick=function(e){
+                    document.querySelector("body").removeChild(document.querySelector(".pop_bg"));
+                    configObj.closeElement.style.display="none";
+                    if(configObj.closeModel==="one")
+                    {
+                        configObj.element.style.display="none";
+                        obj.one(configObj.element).removeClass("havePop");
+                    }
+                    else
+                    {
+                        obj.all(".havePop").css1("display:none");
+                        obj.all(".havePop").removeClass("havePop");
+                    }
+
+                }
+            }
+        }
     };
     function InitAPIFunction(obj)
     {
