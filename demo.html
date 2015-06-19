@@ -42,31 +42,48 @@
     <div>
         <p>The Demo For Pop Component </p>
         <div class="pop_btn">Click for pop</div>
+        <div class="alert_btn">Alert for pop</div>
         <div class="pop">
             Pop success!
         </div>
         <div class="pop-1" style="display: none">
             Pop success1!
         </div>
+        <div class="alert" style="display: none">
+            alert success1!
+        </div>
         <script type="text/javascript">
             var popconfigobj={
-                "element":document.querySelector('.pop'),//必传
+                "elementStr":'.pop',//必传
                 "top":100,//必传
                 "elementDisplay":"block",//必传
                 "opacity":60,//非必传，默认50
-                "closeElement":document.querySelector('.pop'),//非必传
-                "closeModel":"one"
+                "closeElementStr":'.pop',//非必传
+                "closeModel":""
             };
             var popconfigobj_1={
-                "element":document.querySelector('.pop-1'),//必传
+                "elementStr":'.pop-1',//必传
                 "top":100,//必传
                 "elementDisplay":"block",//必传
                 "opacity":60//非必传，默认50
 //                "closeElement":,//非必传
 //                "closeModel":"one"//非必传
             };
-            document.querySelector('.pop_btn').onclick=function(){mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);};
+            document.querySelector('.alert_btn').addEventListener("click",function(){
+//                mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
+//                alert("we");
+                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神");
+            });
+            document.querySelector('.pop_btn').addEventListener("click",function(){
+//                mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
+//                alert("we");
+                mobile.alert("身上的实打实大的萨达四大");
+            });
         </script>
     </div>
+    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
+    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
+    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
+    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
 </body>
 </html>

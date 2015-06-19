@@ -30,6 +30,21 @@
             }
             return  newarr;
         };
+        this.preventPenetration=function(configobj){
+            var obj=this;
+            var elem=obj.dom(configobj.targetStr);
+            elem.addEventListener("touchmove",function(e){
+                var touch= e.changedTouches[0];
+                var target=touch.target;
+                if(obj.one(target).parents(configobj.targetStr))
+                {
+                    if(!configobj.specialStr||!obj.one(target).parents(configobj.specialStr))
+                        e.preventDefault();
+                }
+                else if(target==elem)
+                    e.preventDefault();
+            });
+        };
         this.autoChange=function(maxWidth,originSize){
             var width=document.documentElement.clientWidth;
             var Standard=originSize/(maxWidth*1.0/width);
@@ -191,7 +206,7 @@
         };
         this.pop=function(configObj){
             var obj=this;
-            var bodywidth=document.documentElement.clientWidth;
+            var bodywidth=document.documentElement.clientWidth,elem=obj.dom(configObj.elementStr),closeelem=obj.dom(configObj.closeElementStr);
             if(!document.querySelector(".pop_bg"))
             {
                 var div=document.createElement('div');
@@ -202,22 +217,22 @@
             }
             //if(!multi)
             //    $('.pop').addClass("none");
-            configObj.element.style.display=configObj.elementDisplay;
+            elem.style.display=configObj.elementDisplay;
             var havepoplist=document.querySelectorAll(".havePop");
             if(havepoplist.length>0)
-                obj.one(configObj.element).css1("position: fixed;z-index:"+(parseInt(havepoplist[havepoplist.length-1].style.zIndex)+1)+";left:"+(bodywidth-configObj.element.offsetWidth)/2+"px;top:"+configObj.top+"px");
+                obj.one(elem).css1("position: fixed;z-index:"+(parseInt(havepoplist[havepoplist.length-1].style.zIndex)+1)+";left:"+(bodywidth-elem.offsetWidth)/2+"px;top:"+configObj.top+"px");
             else
-                obj.one(configObj.element).css1("position: fixed;z-index:65;left:"+(bodywidth-configObj.element.offsetWidth)/2+"px;top:"+configObj.top+"px");
-            obj.one(configObj.element).addClass("havePop");
-            if(configObj.closeElement)
+                obj.one(elem).css1("position: fixed;z-index:65;left:"+(bodywidth-elem.offsetWidth)/2+"px;top:"+configObj.top+"px");
+            obj.one(elem).addClass("havePop");
+            if(closeelem)
             {
-                configObj.closeElement.onclick=function(e){
+                closeelem.onclick=function(e){
                     document.querySelector("body").removeChild(document.querySelector(".pop_bg"));
-                    configObj.closeElement.style.display="none";
+                    closeelem.style.display="none";
                     if(configObj.closeModel==="one")
                     {
-                        configObj.element.style.display="none";
-                        obj.one(configObj.element).removeClass("havePop");
+                        elem.style.display="none";
+                        obj.one(elem).removeClass("havePop");
                     }
                     else
                     {
@@ -227,7 +242,29 @@
 
                 }
             }
+            obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
+            obj.preventPenetration({"targetStr":'.pop_bg',"specialStr":''});
         }
+        this.alert=function(alertStr) {
+            var obj=this;
+            if(obj.dom(".mobile_alert")) {
+                obj.one(".mobile_alert").css1("display:block;opacity:1;");
+                obj.dom(".mobile_alert").innerHTML=alertStr;
+            }
+            else
+            {
+                var htmlstr = "<p class=\"mobile_alert\" style=\"width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;\">"+alertStr+"</p>";
+                //obj.one("body").html("append",htmlstr);
+                var p=doc.createElement("p");
+                p.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;";
+                p.className="mobile_alert";
+                p.innerHTML=alertStr;
+                doc.querySelector("body").appendChild(p);
+            }
+            var width=obj.dom(".mobile_alert").offsetWidth;
+            obj.dom(".mobile_alert").style.left=(obj.dom("body").offsetWidth-width)/2+"px";
+            var timeout=setTimeout(function(){obj.one(".mobile_alert").hide();clearTimeout(timeout);},1300);
+        };
     };
     function InitAPIFunction(obj)
     {
@@ -263,6 +300,56 @@
             {
                 obj[i].className=obj[i].className?obj[i].className.indexOf(classstr)>-1?obj[i].className.replace(classstr,"").trim():obj[i].className:"";
             }
+        };
+        Array.prototype.parents=function(selector){
+            var e=obj[0];
+            var parent=doc.querySelector(selector);
+            if(!parent) return null;
+            while(e!==parent)
+            {
+                e= e.parentNode;
+                if(e.tagName=="BODY")
+                    return null;
+            }
+            return e;
+        };
+        Array.prototype.html=function(location,htmlstr){
+            var elem=obj[0];
+            switch (location)
+            {
+                case "before":
+                    elem.outerHTML=htmlstr+elem.outerHTML;
+                    break;
+                case "after":
+                    elem.outerHTML=elem.outerHTML+htmlstr;
+                    break;
+                case "append":
+                    elem.innerHTML=elem.innerHTML+htmlstr;
+                    break;
+                case "prepend":
+                    elem.innerHTML=htmlstr+elem.innerHTML;
+                    break;
+            }
+        };
+        Array.prototype.hide=function(){
+            var opacity=1;
+            var timeout=setInterval(function(){
+                if(opacity>0) {
+                    opacity -= .05;
+                    for(var i=0;i<obj.length;i++) {
+                        obj[i].style.opacity = opacity;
+                    }
+                }
+                else
+                {
+                    for(var i=0;i<obj.length;i++) {
+                        obj[i].style.display = "none";
+                    }
+                    clearTimeout(timeout);
+                    return;
+                }
+            },35);
+
         };
         return;
     }
