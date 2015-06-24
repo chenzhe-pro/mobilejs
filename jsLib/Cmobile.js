@@ -228,7 +228,7 @@
             {
                 closeelem.onclick=function(e){
                     document.querySelector("body").removeChild(document.querySelector(".pop_bg"));
-                    closeelem.style.display="none";
+                    //closeelem.style.display="none";
                     if(configObj.closeModel==="one")
                     {
                         elem.style.display="none";
@@ -245,7 +245,7 @@
             obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
             obj.preventPenetration({"targetStr":'.pop_bg',"specialStr":''});
         }
-        this.alert=function(alertStr) {
+        this.alert=function(alertStr,type) {
             var obj=this;
             if(obj.dom(".mobile_alert")) {
                 obj.one(".mobile_alert").css1("display:block;opacity:1;");
@@ -253,8 +253,11 @@
             }
             else
             {
-                var htmlstr = "<p class=\"mobile_alert\" style=\"width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;\">"+alertStr+"</p>";
+                if(type==1)
+                    var htmlstr = "<p class=\"mobile_alert\" style=\"width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;\">"+alertStr+"</p>";
                 //obj.one("body").html("append",htmlstr);
+                else
+                    var htmlstr = "<div class=\"mobile_alert\" style=\"width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;\"><p>"+alertStr+"</p><div><span class='alert_sure'>确定</span><span class='alert_cancel'>取消</span></div></div>";
                 var p=doc.createElement("p");
                 p.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;";
                 p.className="mobile_alert";
@@ -302,6 +305,18 @@
             }
         };
         Array.prototype.parents=function(selector){
+            var e=obj[0];
+            var parent=doc.querySelector(selector);
+            if(!parent) return null;
+            while(e!==parent)
+            {
+                e= e.parentNode;
+                if(e.tagName=="BODY")
+                    return null;
+            }
+            return e;
+        };
+        Array.prototype.children=function(selector){
             var e=obj[0];
             var parent=doc.querySelector(selector);
             if(!parent) return null;
