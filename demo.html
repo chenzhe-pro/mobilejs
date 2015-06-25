@@ -46,7 +46,7 @@
         <div class="pop">
             Pop success!
         </div>
-        <div class="pop-1" style="display: none">
+        <div class="pop-1" style="display: none;">
             Pop success1!
         </div>
         <div class="alert" style="display: none">
@@ -56,6 +56,7 @@
             var popconfigobj={
                 "elementStr":'.pop',//必传
                 "top":100,//必传
+                "zIndex":65,
                 "elementDisplay":"block",//必传
                 "opacity":60,//非必传，默认50
                 "closeElementStr":'.pop',//非必传
@@ -64,20 +65,19 @@
             var popconfigobj_1={
                 "elementStr":'.pop-1',//必传
                 "top":100,//必传
+                "zIndex":66,
                 "elementDisplay":"block",//必传
                 "opacity":60//非必传，默认50
 //                "closeElement":,//非必传
 //                "closeModel":"one"//非必传
             };
             document.querySelector('.alert_btn').addEventListener("click",function(){
-//                mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
+//                mobile.pop(popconfigobj);
 //                alert("we");
-                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神");
+                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神",1);
             });
             document.querySelector('.pop_btn').addEventListener("click",function(){
-//                mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
-//                alert("we");
-                mobile.alert("身上的实打实大的萨达四大");
+                mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
             });
         </script>
     </div>

@@ -4,7 +4,7 @@
     {
         this.pop=function(configObj){
             var obj=this;
-            var bodywidth=document.documentElement.clientWidth,elem=$(configObj.elementStr)[0],closeelem=$(configObj.closeElementStr)[0];
+            var bodywidth=document.documentElement.clientWidth,elem=$(configObj.elementStr)[0],closeelem=$(configObj.closeElementStr);
             if(!$(".pop_bg")[0])
             {
                 var div=document.createElement('div');
@@ -13,18 +13,18 @@
                 div.setAttribute("style","width: 100%;height: 100%;position: fixed;top:0;left: 0;z-index:60;margin:0;background-color: rgba(168,173,176,"+stylestr+");");
                 $("body")[0].appendChild(div);
             }
-            //if(!multi)
-            //    $('.pop').addClass("none");
-            elem.style.display=configObj.elementDisplay;
-            var havepoplist=$(".havePop");
-            if(havepoplist.length>0)
-                $(elem).css({"position": "fixed","z-index":(parseInt(havepoplist[havepoplist.length-1].style.zIndex)+1),"left":(bodywidth-elem.offsetWidth)/2+"px","top":configObj.top+"px"});
-            else
-                $(elem).css({"position": "fixed","z-index":65,"left":(bodywidth-elem.offsetWidth)/2+"px","top":configObj.top+"px"});
+            //elem.style.display=configObj.elementDisplay;
+            //var havepoplist=$(".havePop");
+            //if(havepoplist.length>0)
+            //    $(elem).css({"position": "fixed","z-index":(parseInt(havepoplist[havepoplist.length-1].style.zIndex)+1),"left":(bodywidth-elem.offsetWidth)/2+"px","top":configObj.top+"px"});
+            //else
+                $(elem).css({"position": "fixed","display":configObj.elementDisplay});
+            $(elem).css({"left":(bodywidth-elem.offsetWidth)/2+"px","top":configObj.top+"px","z-index":configObj.zIndex});
+
             $(elem).addClass("havePop");
-            if(closeelem)
+            if(closeelem.length>0)
             {
-                closeelem.onclick=function(e){
+                closeelem.unbind("click").on('click',function(e){
                     $("body")[0].removeChild($(".pop_bg")[0]);
                     //closeelem.style.display="none";
                     if(configObj.closeModel==="one")
@@ -37,7 +37,7 @@
                         $(".havePop").css({"display":"none"});
                         $(".havePop").removeClass("havePop");
                     }
-                }
+                });
             }
         };
         this.alert=function(alertStr,type,call) {
