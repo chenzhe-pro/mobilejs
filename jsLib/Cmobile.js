@@ -7,7 +7,8 @@
     function mobile(){
         //sds
         this.dom=function(selector){//初级选择器,只兼容webkit浏览器
-            return doc.querySelector(selector);
+            if(selector)
+                return doc.querySelector(selector);
         };
         this.one=function(selector){
             var one,arr;
@@ -51,7 +52,7 @@
             document.querySelector("html").style.fontSize=Standard+"px";
             return;
         };
-        this.slide=function(slidetype,elem,number,urlarray,obj,timestr,auto,autotime){//样式自己添加
+        this.slide=function(slidetype,elem,number,urlarray,linkarray,obj,timestr,auto,autotime){//样式自己添加
             var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX,mobile=this;
             elem.style.overflow="hidden";
             elem.style.position="relative";
@@ -71,10 +72,10 @@
                     index.innerHTML+="<span style='display: inline-block;width: 13px;height: 13px;background-color: #5c5c5c;border-radius: 50% 50%;margin-right: 6px;' class='index'></span>";
                 }
             }
-
             for (var i = 0; i < number; i++) {
-                imgstr+="<img src=\""+urlarray[i]+"\" alt=\"\" style=\"display: block;width:"+obj.width+"px;height:"+obj.height+"px;\" />"
-	        };
+                var link=linkarray[i]?linkarray[i]:"";
+                imgstr+="<img src='"+urlarray[i]+"' alt='' style='display: block;width:"+obj.width+"px;height:"+obj.height+"px;' link='"+link+"' />"
+            }
             div.innerHTML=imgstr;
             elem.appendChild(div);
             elem.appendChild(index);
@@ -277,34 +278,67 @@
                         obj.all(".havePop").css1("display:none");
                         obj.all(".havePop").removeClass("havePop");
                     }
-
                 }
             }
-            obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
+            //obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
             obj.preventPenetration({"targetStr":'.pop_bg',"specialStr":''});
         }
-        this.alert=function(alertStr,type) {
-            var obj=this;
+        this.alert=function(alertStr,type,fun) {
+            var obj=this,mobile_alert_bg=doc.createElement("div"),pageWidth=doc.documentElement.clientWidth,
+                pageHeight=doc.documentElement.clientHeight;
             if(obj.dom(".mobile_alert")) {
-                obj.one(".mobile_alert").css1("display:block;opacity:1;");
-                obj.dom(".mobile_alert").innerHTML=alertStr;
+                return;
             }
-            else
+            if(type==1)
             {
-                if(type==1)
-                    var htmlstr = "<p class=\"mobile_alert\" style=\"width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;\">"+alertStr+"</p>";
-                //obj.one("body").html("append",htmlstr);
-                else
-                    var htmlstr = "<div class=\"mobile_alert\" style=\"width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;\"><p>"+alertStr+"</p><div><span class='alert_sure'>确定</span><span class='alert_cancel'>取消</span></div></div>";
-                var p=doc.createElement("p");
-                p.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;";
-                p.className="mobile_alert";
-                p.innerHTML=alertStr;
-                doc.querySelector("body").appendChild(p);
+                var innerhtmlstr = "<p>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 5px 7px;'>确定</span></div>";
+                var div=doc.createElement("div");
+                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;";
+                div.className="mobile_alert";
+                div.innerHTML=innerhtmlstr;
+                doc.querySelector("body").appendChild(div);
+                var width=obj.dom(".mobile_alert").offsetWidth;
+                obj.dom(".mobile_alert").style.left=(pageWidth-width)/2+"px";
+                obj.dom(".alert_sure").addEventListener("touchend",function(e){
+                    e.preventDefault();
+                    if(fun)
+                        fun();
+                    else
+                    {
+                        obj.dom("body").removeChild(obj.dom(".mobile_alert"));
+                        obj.dom("body").removeChild(mobile_alert_bg);
+                    }
+                })
             }
-            var width=obj.dom(".mobile_alert").offsetWidth;
-            obj.dom(".mobile_alert").style.left=(obj.dom("body").offsetWidth-width)/2+"px";
-            var timeout=setTimeout(function(){obj.one(".mobile_alert").hide();clearTimeout(timeout);},1300);
+            else if(type==2)
+            {
+                var innerhtmlstr = "<p>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_cancel' style='font-size: 15px;background-color: ;letter-spacing: 2px;margin-right: 15px;padding: 5px 7px;'>取消</span><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 4px 6px;'>确定</span></div>";
+                var div=doc.createElement("div");
+                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;";
+                div.className="mobile_alert";
+                div.innerHTML=innerhtmlstr;
+                doc.querySelector("body").appendChild(div);
+                var width=obj.dom(".mobile_alert").offsetWidth;
+                obj.dom(".mobile_alert").style.left=(pageWidth-width)/2+"px";
+                obj.dom(".alert_sure").addEventListener("touchend",function(e){
+                    e.preventDefault();
+                    if(fun)
+                        fun();
+                    else
+                    {
+                        obj.dom("body").removeChild(obj.dom(".mobile_alert"));
+                        obj.dom("body").removeChild(mobile_alert_bg);
+                    }
+                });
+                obj.dom(".alert_cancel").addEventListener("touchend",function(e){
+                    e.preventDefault();
+                    obj.dom("body").removeChild(obj.dom(".mobile_alert"));
+                    obj.dom("body").removeChild(mobile_alert_bg);
+                });
+            }
+            mobile_alert_bg.style.cssText="position:fixed;top:0;left:0;z-index:999;background-color: rgba(25,24,24,0.1);height:"+pageHeight+"px;width:"+pageWidth+"px";
+            mobile_alert_bg.className="mobile_alert_bg";
+            obj.dom("body").appendChild(mobile_alert_bg);
         };
     };
     function InitAPIFunction(obj)

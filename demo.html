@@ -23,8 +23,14 @@
         <div class="slide"></div>
         <script type="text/javascript">
             var area=document.querySelector(".slide");
-            var urlarr=["http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg"];
-            mobile.slide(area,3,urlarr,{"width":300,"height":150},"0.8s",true,3000);
+            var urlarr=["http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg"],
+                linkarr=["http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg","http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg"];
+            mobile.slide(1,area,3,urlarr,linkarr,{"width":300,"height":150},"1s",true,3000);
+            document.querySelector(".slide").addEventListener("click",function (e){
+                var target=e.target;
+                if(target.tagName=="IMG")
+                window.location.href=target.getAttribute("link");
+            });
         </script>
     </div>
     <div>
@@ -74,7 +80,10 @@
             document.querySelector('.alert_btn').addEventListener("click",function(){
 //                mobile.pop(popconfigobj);
 //                alert("we");
-                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神",1);
+                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神",2,function(e){
+                    // mobile.dom("body").removeChild(mobile.dom(".mobile_alert"));
+                    mobile.dom(".mobile_alert").style.display='none';
+                });
             });
             document.querySelector('.pop_btn').addEventListener("click",function(){
                 mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
