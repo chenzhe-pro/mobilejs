@@ -62,14 +62,16 @@
             var popconfigobj={
                 "elementStr":'.pop',//必传
                 "top":100,//必传
+                "zIndex":65,
                 "elementDisplay":"block",//必传
                 "opacity":60,//非必传，默认50
                 "closeElementStr":'.pop',//非必传
-                "closeModel":"one"
+                "closeModel":""
             };
             var popconfigobj_1={
                 "elementStr":'.pop-1',//必传
                 "top":100,//必传
+                "zIndex":66,
                 "elementDisplay":"block",//必传
                 "opacity":60//非必传，默认50
 //                "closeElement":,//非必传
@@ -78,7 +80,10 @@
             document.querySelector('.alert_btn').addEventListener("click",function(){
 //                mobile.pop(popconfigobj);
 //                alert("we");
-                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神",2);
+                mobile.alert("警告！是大神大神大神大神大神大神大神大神大神",2,function(e){
+                    // mobile.dom("body").removeChild(mobile.dom(".mobile_alert"));
+                    mobile.dom(".mobile_alert").style.display='none';
+                });
             });
             document.querySelector('.pop_btn').addEventListener("click",function(){
                 mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
