@@ -1,5 +1,5 @@
 /**
- * Created by chenzhe on 2015/3/20.
+ * Created by Zhe Chen on 2015/3/20.
  * 自用。欢迎指正不足。
  * 不依赖任何第三方类库，兼容主流浏览器，不支持IE8及以下版本
  **/
@@ -189,7 +189,8 @@
         this.autoChange=function(maxWidth,originSize){
             var width=document.documentElement.clientWidth;
             var Standard=originSize/(maxWidth*1.0/width);
-            document.querySelector("html").style.fontSize=Standard+"px";
+            Standard=Standard>100?100:Standard;
+            documenStandard=this.dom("html").style.fontSize=Standard+"px";
             return;
         };
         this.slide=function(slidetype,elem,number,urlarray,linkarray,obj,timestr,auto,autotime){//样式自己添加
@@ -512,6 +513,7 @@
     mobile.prototype.mobilecommon=new mobileCommon();
     mobile.prototype.deviceinfo=new DeviceInfo(doc,win);
     var mobile=new mobile();
+    mobile.autoChange(640,100);
     mobile.readOnly=true;
     win.mobile=mobile;
     // MobileObj.prototype=mobile;
