@@ -1,5 +1,5 @@
 /**
- * Created by Zhe Chen on 2015/3/20.
+ * Created by ZheChen on 2015/3/20.
  * 自用。欢迎指正不足。
  * 不依赖任何第三方类库，兼容主流浏览器，不支持IE8及以下版本
  **/
@@ -7,7 +7,7 @@
     var indexOfSlide=0,initflg=false;
     function GetMobileObj(one)
     {
-        //Init mobile API,mobile核心库（实例化MobileObj对象并加载核心库）
+        //Init mobile core API,mobile核心库（实例化MobileObj对象并加载核心库）
         function MobileObj()
         {
             this.css=function(cssobj){
@@ -168,7 +168,7 @@
         if(!flg) 
             mobileFunctions.call(this);
     }
-    //Init mobile API,mobile功能库
+    //Init mobile function API,mobile功能库
     function mobileFunctions()
     {
         this.preventPenetration=function(configobj){
