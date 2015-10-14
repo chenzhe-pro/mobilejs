@@ -47,6 +47,12 @@
                 }
                 return obj;
             };
+            this.hasClass=function(classstr){
+                var obj=this[0];
+                if(obj.className.indexOf(classstr)>-1)
+                    return true;
+                else return false;
+            };
             this.parents=function(selector){
                 var e=this[0],parent,mobj=this;
                 mobj.length=0;
@@ -85,44 +91,109 @@
                 }
                 return mobj;
             };
-            this.html=function(location,htmlstr){
-                var elem=this[0];
-                switch (location)
+            this.html=function(htmlstr){
+                var elem=this;
+                if(htmlstr!==undefined) 
                 {
-                    case "before":
-                        elem.outerHTML=htmlstr+elem.outerHTML;
-                        break;
-                    case "after":
-                        elem.outerHTML=elem.outerHTML+htmlstr;
-                        break;
-                    case "append":
-                        elem.innerHTML=elem.innerHTML+htmlstr;
-                        break;
-                    case "prepend":
-                        elem.innerHTML=htmlstr+elem.innerHTML;
-                        break;
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].innerHTML=htmlstr;
+                    }
                 }
-                return elem;
+                else return elem[0].innerHTML;
+                return ;
+            };
+            this.append=function(htmlstr){
+                var elem=this;
+                if(htmlstr instanceof Node)
+                {
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].appendChild(htmlstr);
+                    }
+                }
+                else
+                {
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].insertAdjacentHTML("beforeend",htmlstr);
+                    }
+                }
+            };
+            this.prepend=function(htmlstr){
+                var elem=this;
+                if(htmlstr instanceof Node)
+                {
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].prependChild(htmlstr);
+                    }
+                }
+                else
+                {
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].insertAdjacentHTML("afterbegin",htmlstr);
+                    }
+                }
+            };
+            this.after=function(htmlstr){
+                var elem=this;
+                if(htmlstr instanceof Node)
+                {
+                    // for(var i=0;i<elem.length;i++)
+                    // {
+                    //     elem.parentNode.appendChild(htmlstr);
+                    // }
+                }
+                else
+                {
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].insertAdjacentHTML("afterend",htmlstr);
+                    }
+                }
+            };
+            this.before=function(htmlstr){
+                var elem=this;
+                if(htmlstr instanceof Node)
+                {
+                    
+                    // elem.parentNode.appendChild(htmlstr);
+                    
+                }
+                else
+                {
+                    for(var i=0;i<elem.length;i++)
+                    {
+                        elem[i].insertAdjacentHTML("beforebegin",htmlstr);
+                    }
+                }
+            };
+            this.contains=function(elem){
+                var obj=this[0];
+                if(obj.contains(elem)) return true;
+                return false;
             };
             this.hide=function(){
-                var opacity=1,obj=this;
-                var timeout=setInterval(function(){
-                    if(opacity>0) {
-                        opacity -= .05;
-                        for(var i=0;i<obj.length;i++) {
-                            obj[i].style.opacity = opacity;
-                        }
-                    }
-                    else
-                    {
-                        for(var i=0;i<obj.length;i++) {
-                            obj[i].style.display = "none";
-                        }
-                        clearTimeout(timeout);
-                        return;
-                    }
-                },35);
+                var obj=this;
+                
                 return obj;
+            };
+            this.attr=function(attribute,value){
+                var obj=this;
+                if(value)
+                {
+                    for(var i=0;i<obj.length;i++)
+                    {
+                        obj[i].setAttribute(attribute,value);
+                    }
+                    return undefined;
+                }
+                else
+                {
+                    return obj[0].getAttribute(attribute);
+                }
             };
         }
         MobileObj.prototype=one?new Array(one):new Array();
@@ -131,6 +202,7 @@
     
     function mobile(flg)
     {
+        //Init mobile selector API,mobile选择器
         this.dom=function(selector){
             if(selector)
                 return doc.querySelector(selector);
@@ -177,9 +249,9 @@
             elem.addEventListener("touchmove",function(e){
                 var touch= e.changedTouches[0];
                 var target=touch.target;
-                if(obj.one(target).parents(configobj.targetStr))
+                if(obj.one(target).parents(configobj.targetStr).length>0)
                 {
-                    if(!configobj.specialStr||!obj.one(target).parents(configobj.specialStr))
+                    if(!configobj.specialStr||(obj.one(target).parents(configobj.specialStr).length==0&&target!=obj.dom(configobj.specialStr)))
                         e.preventDefault();
                 }
                 else if(target==elem)
@@ -195,9 +267,7 @@
         };
         this.slide=function(slidetype,elem,number,urlarray,linkarray,obj,timestr,auto,autotime){//样式自己添加
             var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX,mobile=this;
-            elem.style.overflow="hidden";
-            elem.style.position="relative";
-            // elem.style.cssText="overflow:hidden;position:relative";
+            elem.style.cssText="overflow:hidden;position:relative";
             div.style.display="-webkit-box";
             div.style.webkitTransition="-webkit-transform "+timestr;
             if(slidetype==1)
@@ -335,7 +405,7 @@
             lazytype==="page"&&pagefun();
             lazytype==="slide"&&slidefun();
         };
-        this.countDown=function(enddate,showobj){//样式自己添加
+        this.countDown=function(enddate,showobj){//样式可自己修改
             var obj=this;
             function timeout(){
                 // this;
@@ -424,6 +494,9 @@
             //obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
             obj.preventPenetration({"targetStr":'.pop_bg',"specialStr":''});
         }
+        this.removePop=function(){
+
+        };
         this.alert=function(alertStr,type,fun) {
             var obj=this,mobile_alert_bg=doc.createElement("div"),pageWidth=doc.documentElement.clientWidth,
                 pageHeight=doc.documentElement.clientHeight;
@@ -434,7 +507,7 @@
             {
                 var innerhtmlstr = "<p>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 5px 7px;'>确定</span></div>";
                 var div=doc.createElement("div");
-                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;";
+                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
                 div.className="mobile_alert";
                 div.innerHTML=innerhtmlstr;
                 doc.querySelector("body").appendChild(div);
@@ -455,7 +528,7 @@
             {
                 var innerhtmlstr = "<p>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_cancel' style='font-size: 15px;background-color: ;letter-spacing: 2px;margin-right: 15px;padding: 5px 7px;'>取消</span><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 4px 6px;'>确定</span></div>";
                 var div=doc.createElement("div");
-                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;";
+                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
                 div.className="mobile_alert";
                 div.innerHTML=innerhtmlstr;
                 doc.querySelector("body").appendChild(div);
@@ -480,7 +553,127 @@
             mobile_alert_bg.style.cssText="position:fixed;top:0;left:0;z-index:999;background-color: rgba(25,24,24,0.1);height:"+pageHeight+"px;width:"+pageWidth+"px";
             mobile_alert_bg.className="mobile_alert_bg";
             obj.dom("body").appendChild(mobile_alert_bg);
+            obj.preventPenetration({"targetStr":'.mobile_alert_bg',"specialStr":''});
         };
+        this.calendar=function(Obj){//样式可自己修改
+            var mobile=this,
+            today=new Date(),
+            year=today.getFullYear(),
+            month=today.getMonth(),
+            date=today.getDate(),
+            day=today.getDay();
+            
+            loadBasicHtml();
+            var mobile_calendar=mobile.one(".mobile_calendar");
+            
+            loadCalendarHead(year,month);
+            loadMonth(year,month,date);
+            loadCalendarEvent();
+
+            mobile.dom(".mobile_calendar .prev_month").onclick=function(e){
+                var target=e.target,
+                year=mobile.one(".mobile_calendar .mon").attr("year"),
+                month=mobile.one(".mobile_calendar .mon").attr("month");
+                if(month==1)
+                {
+                    year--;
+                    month=12;
+                }
+                else
+                {
+                    month--;
+                }
+                loadCalendarHead(year,month-1);
+                if(today.getMonth()+1==month) loadMonth(year,month-1,today.getDate());
+                else loadMonth(year,month-1,null)
+            };
+            mobile.dom(".mobile_calendar .next_month").onclick=function(e){
+                var target=e.target,
+                year=mobile.one(".mobile_calendar .mon").attr("year"),
+                month=mobile.one(".mobile_calendar .mon").attr("month");
+                if(month==12)
+                {
+                    year++;
+                    month=1;
+                }
+                else
+                {
+                    month++;
+                }
+                loadCalendarHead(year,month-1);
+                if(today.getMonth()+1==month) loadMonth(year,month-1,today.getDate());
+                else loadMonth(year,month-1,null)
+            };
+            var popconfigobj={
+                "elementStr":'.mobile_calendar',//必传
+                "top":100,//必传
+                "elementDisplay":"block",//必传
+                "opacity":20,//非必传，默认50
+                "closeElementStr":'.null',//非必传
+                "closeModel":"one"//非必传
+            };
+            mobile.pop(popconfigobj);
+
+            function loadMonth(year,month,date)
+            {
+                
+                var month_dates_arr=[31,28,31,30,31,30,31,31,30,31,30,31],
+                    firstdate=new Date(year,month,1),
+                    li_str='',
+                    d=firstdate.getDay(),
+                    dd=firstdate.getDate(),
+                    day_li=mobile.all(".calendar_day li"),
+                    dates=month_dates_arr[month];
+                if((year%4==0&&year%100!=0)||(year%400==0))
+                    month_dates_arr[1]=29;
+                for(var i=0;i<7;i++)//确定起始点
+                {
+                    if(day_li[i].getAttribute("i")==d)
+                    {
+                        li_str+=("<li date='1' class='canclick'>1</li>");
+                        dd++;
+                        break;
+                    }
+                    else
+                    {
+                        li_str+=("<li date='' class=''></li>");
+                    }
+                }
+                for(var i=1;i<dates;i++)
+                {
+                    li_str+=("<li date='"+dd+"' class='canclick'>"+dd+"</li>");
+                    dd++;
+                }
+                mobile.one(".dates_table").html("");
+                mobile.one(".dates_table").append(li_str);
+                if(date) mobile.all("li[date='"+date+"']").addClass("today");
+            }
+            function loadCalendarHead(year,month)
+            {
+                mobile.one(".mon").attr("year",year);
+                mobile.one(".mon").attr("month",month+1);
+                mobile.one(".calendar_year").html(year);
+                mobile.one(".calendar_month").html(month+1);
+            }
+            function loadCalendarEvent()
+            {
+                mobile.dom(".dates_table").addEventListener("click",function(e){
+                    var target=e.target;
+                    var year=mobile.one(".mobile_calendar .mon").attr("year"),
+                    month=mobile.one(".mobile_calendar .mon").attr("month");
+                    if(mobile.one(target).hasClass("canclick"))
+                    {
+                        var date_val=year+"-"+month+"-"+target.getAttribute("date");
+                        console.log(date_val);
+                    }
+                });
+            }
+            function loadBasicHtml()
+            {
+                var htmlstr="<div class='mobile_calendar'><div class='mon' year='' month=''><span class='month_ctrl prev_month'><span></span></span><span class='calendar_year'></span><span>年</span><span class='calendar_month'></span><span>月</span><span class='month_ctrl next_month'><span></span></span></div><ul class='calendar_day'><li i='1'>一</li><li i='2'>二</li><li i='3'>三</li><li i='4'>四</li><li i='5'>五</li><li i='6'>六</li><li i='0'>日</li></ul><ul class='dates_table'></ul></div>";
+                mobile.one("body").append(htmlstr);
+            }
+        }
     }
     function DeviceInfo(doc,win)
     {
