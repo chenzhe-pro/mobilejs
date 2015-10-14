@@ -579,10 +579,7 @@
                     year--;
                     month=12;
                 }
-                else
-                {
-                    month--;
-                }
+                else month--;
                 loadCalendarHead(year,month-1);
                 if(today.getMonth()+1==month) loadMonth(year,month-1,today.getDate());
                 else loadMonth(year,month-1,null)
@@ -623,9 +620,10 @@
                     d=firstdate.getDay(),
                     dd=firstdate.getDate(),
                     day_li=mobile.all(".calendar_day li"),
-                    dates=month_dates_arr[month];
+                    dates;
                 if((year%4==0&&year%100!=0)||(year%400==0))
                     month_dates_arr[1]=29;
+                dates=month_dates_arr[month];
                 for(var i=0;i<7;i++)//确定起始点
                 {
                     if(day_li[i].getAttribute("i")==d)
