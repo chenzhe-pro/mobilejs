@@ -6,13 +6,14 @@
     <script type="text/javascript" src="Lib/Cmobile.js"></script>
     <link rel="stylesheet" type="text/css" href="Lib/Cmobile.css">
     <style type="text/css">
-        body{font-family: "Microsoft YaHei";font-size: 15px;}
-        body>div{border:1px solid gray;margin-top: 10px;}
+        body{font-family: ""\5fae\8f6f\96c5\9ed1", "Microsoft YaHei", SimHei, Helvetica, Arial, SimSun;";font-size: 15px;}
+        body>div{/*border:1px solid gray;*/margin-top: 10px;}
         .slide{width: 300px;height: 150px;margin: 10px auto;}
         p{width: 300px;margin: 0 auto;}
         .countdown{margin: 10px auto;}
         .countdown span{background-color: gray;display: inline-block;width: 30px;height: 30px;border-radius: 10px 10px;text-align: center;line-height: 30px;}
         .pop{display: none;width: 70%;background-color: #999;height: 200px;text-align: center;}
+        .pop-1{display: none;width: 60%;background-color: #bbb;height: 150px;text-align: center;}
         .pop_btn{width: 120px;background-color: #888;margin: 10px auto;border-radius: 10px 10px;text-align: center;}
     </style>
 </head>
@@ -65,15 +66,14 @@
                 "elementDisplay":"block",//必传
                 "opacity":60,//非必传，默认50
                 "closeElementStr":'.pop',//非必传
-                "closeModel":"one"
+                "closeModel":""//非必传
             };
             var popconfigobj_1={
                 "elementStr":'.pop-1',//必传
                 "top":100,//必传
                 "elementDisplay":"block",//必传
                 "opacity":60//非必传，默认50
-//                "closeElement":,//非必传
-//                "closeModel":"one"//非必传
+                
             };
             document.querySelector('.alert_btn').addEventListener("click",function(){
 //                mobile.pop(popconfigobj);
@@ -81,11 +81,18 @@
                 mobile.alert("警告！是大神大神大神大神大神大神大神大神大神",2);
             });
             document.querySelector('.pop_btn').addEventListener("click",function(){
-                mobile.pop(popconfigobj);mobile.pop(popconfigobj_1);
+                mobile.pop(popconfigobj);
+                mobile.pop(popconfigobj_1);
+            });
+            document.querySelector('.pop-1').addEventListener("click",function(){
+                mobile.removePop(popconfigobj_1);
+                mobile.alert("body",1);
             });
         </script>
     </div>
-    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
+    <div class="cc">
+        <input type="text" />
+    </div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
@@ -107,9 +114,11 @@
         </ul>
     </div> -->
     <script type="text/javascript">
-        mobile.calendar({
-            
-        });
+    mobile.dom(".cc input").onclick=function(e){
+        var target=e.target;
+        mobile.calendar(target);
+    }
+        
     </script>
 </body>
 </html>

@@ -195,6 +195,14 @@
                     return obj[0].getAttribute(attribute);
                 }
             };
+            this.remove=function(){
+                var obj=this;
+                for(var i=0;i<obj.length;i++)
+                {
+                    obj[i].parentNode.removeChild(obj[i]);
+                }
+                return obj;
+            };
         }
         MobileObj.prototype=one?new Array(one):new Array();
         return new MobileObj();
@@ -456,7 +464,7 @@
         };
         this.pop=function(configObj){
             var obj=this;
-            var bodywidth=document.documentElement.clientWidth,elem=obj.dom(configObj.elementStr),closeelem=obj.dom(configObj.closeElementStr);
+            var bodywidth=document.documentElement.clientWidth,elem=obj.dom(configObj.elementStr),closeelem;
             if(!document.querySelector(".pop_bg"))
             {
                 var div=document.createElement('div');
@@ -474,11 +482,10 @@
             else
                 obj.one(elem).css1("position: fixed;z-index:65;left:"+(bodywidth-elem.offsetWidth)/2+"px;top:"+configObj.top+"px");
             obj.one(elem).addClass("havePop");
-            if(closeelem)
+            if(configObj.closeElementStr&&obj.dom(configObj.closeElementStr))
             {
+                closeelem=obj.dom(configObj.closeElementStr);
                 closeelem.onclick=function(e){
-                    document.querySelector("body").removeChild(document.querySelector(".pop_bg"));
-                    //closeelem.style.display="none";
                     if(configObj.closeModel==="one")
                     {
                         elem.style.display="none";
@@ -489,13 +496,17 @@
                         obj.all(".havePop").css1("display:none");
                         obj.all(".havePop").removeClass("havePop");
                     }
+                    if(obj.all(".havePop").length==0) obj.one(".pop_bg").remove();
                 }
             }
             //obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
             obj.preventPenetration({"targetStr":'.pop_bg',"specialStr":''});
+            return configObj;
         }
-        this.removePop=function(){
-
+        this.removePop=function(configObj){
+            var mobile=this;
+            mobile.one(configObj.elementStr).css1("display:none").removeClass("havePop");
+            if(mobile.all(".havePop").length==0) mobile.one(".pop_bg").remove();
         };
         this.alert=function(alertStr,type,fun) {
             var obj=this,mobile_alert_bg=doc.createElement("div"),pageWidth=doc.documentElement.clientWidth,
@@ -555,16 +566,26 @@
             obj.dom("body").appendChild(mobile_alert_bg);
             obj.preventPenetration({"targetStr":'.mobile_alert_bg',"specialStr":''});
         };
-        this.calendar=function(Obj){//样式可自己修改
+        this.calendar=function(element){//样式可自己修改
             var mobile=this,
             today=new Date(),
             year=today.getFullYear(),
             month=today.getMonth(),
             date=today.getDate(),
             day=today.getDay();
-            
-            loadBasicHtml();
             var mobile_calendar=mobile.one(".mobile_calendar");
+            var popconfigobj={
+                "elementStr":'.mobile_calendar',//必传
+                "top":100,//必传
+                "elementDisplay":"block",//必传
+                "opacity":20//非必传，默认50
+            };
+            if(mobile_calendar.length>0)
+            {
+                mobile.pop(popconfigobj);
+                return;
+            } 
+            else loadBasicHtml();
             
             loadCalendarHead(year,month);
             loadMonth(year,month,date);
@@ -593,22 +614,12 @@
                     year++;
                     month=1;
                 }
-                else
-                {
-                    month++;
-                }
+                else month++;
                 loadCalendarHead(year,month-1);
                 if(today.getMonth()+1==month) loadMonth(year,month-1,today.getDate());
                 else loadMonth(year,month-1,null)
             };
-            var popconfigobj={
-                "elementStr":'.mobile_calendar',//必传
-                "top":100,//必传
-                "elementDisplay":"block",//必传
-                "opacity":20,//非必传，默认50
-                "closeElementStr":'.null',//非必传
-                "closeModel":"one"//非必传
-            };
+            
             mobile.pop(popconfigobj);
 
             function loadMonth(year,month,date)
@@ -632,10 +643,7 @@
                         dd++;
                         break;
                     }
-                    else
-                    {
-                        li_str+=("<li date='' class=''></li>");
-                    }
+                    else li_str+=("<li date='' class=''></li>");
                 }
                 for(var i=1;i<dates;i++)
                 {
@@ -662,7 +670,8 @@
                     if(mobile.one(target).hasClass("canclick"))
                     {
                         var date_val=year+"-"+month+"-"+target.getAttribute("date");
-                        console.log(date_val);
+                        element.value=date_val;
+                        mobile.removePop(popconfigobj);
                     }
                 });
             }
@@ -671,7 +680,7 @@
                 var htmlstr="<div class='mobile_calendar'><div class='mon' year='' month=''><span class='month_ctrl prev_month'><span></span></span><span class='calendar_year'></span><span>年</span><span class='calendar_month'></span><span>月</span><span class='month_ctrl next_month'><span></span></span></div><ul class='calendar_day'><li i='1'>一</li><li i='2'>二</li><li i='3'>三</li><li i='4'>四</li><li i='5'>五</li><li i='6'>六</li><li i='0'>日</li></ul><ul class='dates_table'></ul></div>";
                 mobile.one("body").append(htmlstr);
             }
-        }
+        };
     }
     function DeviceInfo(doc,win)
     {
