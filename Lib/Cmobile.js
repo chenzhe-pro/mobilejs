@@ -188,12 +188,24 @@
                     {
                         obj[i].setAttribute(attribute,value);
                     }
-                    return undefined;
+                    return obj;
                 }
                 else
                 {
                     return obj[0].getAttribute(attribute);
                 }
+            };
+            this.val=function(value){
+                var obj=this;
+                if(value)
+                {
+                    for(var i=0;i<obj.length;i++)
+                    {
+                        obj[i].value=value;
+                    }
+                    return obj;
+                }
+                else return obj[0].value;
             };
             this.remove=function(){
                 var obj=this;
