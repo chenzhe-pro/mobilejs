@@ -582,6 +582,8 @@
             };
             if(mobile_calendar.length>0)
             {
+                loadCalendarHead(year,month);
+                loadMonth(year,month,date);
                 mobile.pop(popconfigobj);
                 return;
             } 
