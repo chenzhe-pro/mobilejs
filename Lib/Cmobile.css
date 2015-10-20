@@ -13,3 +13,25 @@
 .dates_table li.canclick:hover{background-color: #ADADAD;}
 .mobile_calendar li.today{background-color: gray;}
 .mobile_calendar li.select_date{background-color: #A5A5A5;}
+
+/*动画*/
+.animated{-webkit-animation-duration:1s;animation-duration:1s;-webkit-animation-fill-mode:both;animation-fill-mode:both}
+.bounceInUp{-webkit-animation-name:bounceInUp;animation-name:bounceInUp}
+.bounceIn{-webkit-animation-name:bounceIn;animation-name:bounceIn;-webkit-animation-duration:0.7s;animation-duration:0.7s;}
+@-webkit-keyframes bounceIn{0%{opacity:0;-webkit-transform:scale(.3);transform:scale(.3)}50%{opacity:1;-webkit-transform:scale(1.05);transform:scale(1.05)}70%{-webkit-transform:scale(.9);transform:scale(.9)}100%{opacity:1;-webkit-transform:scale(1);transform:scale(1)}}
+@keyframes bounceIn{0%{opacity:0;-webkit-transform:scale(.3);-ms-transform:scale(.3);transform:scale(.3)}50%{opacity:1;-webkit-transform:scale(1.05);-ms-transform:scale(1.05);transform:scale(1.05)}70%{-webkit-transform:scale(.9);-ms-transform:scale(.9);transform:scale(.9)}100%{opacity:1;-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1)}}
+
+@-webkit-keyframes bounceInUp
+{
+0%{opacity:0;-webkit-transform:translateY(2000px);transform:translateY(2000px)}
+60%{opacity:1;-webkit-transform:translateY(-30px);transform:translateY(-30px)}
+80%{-webkit-transform:translateY(10px);transform:translateY(10px)}
+100%{-webkit-transform:translateY(0);transform:translateY(0)}
+}
+@keyframes bounceInUp
+{
+0%{opacity:0;-webkit-transform:translateY(2000px);transform:translateY(2000px);-ms-transform:translateY(2000px)}
+60%{opacity:1;-webkit-transform:translateY(-30px);transform:translateY(-30px);-ms-transform:translateY(-30px)}
+80%{-webkit-transform:translateY(10px);transform:translateY(10px);-ms-transform:translateY(10px)}
+100%{-webkit-transform:translateY(0);transform:translateY(0);-ms-transform:translateY(0)}
+}

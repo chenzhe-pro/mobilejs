@@ -7,7 +7,7 @@
     var indexOfSlide=0,initflg=false;
     function GetMobileObj(one)
     {
-        //Init mobile core API,mobile核心库（实例化MobileObj对象并加载核心库）
+        //Init mobile core API,mobile核心库（实例化MobileObj对象并加载核心库）。ps:核心库和功能库完全独立
         function MobileObj()
         {
             this.css=function(cssobj){
@@ -91,6 +91,26 @@
                 }
                 return mobj;
             };
+            this.next=function(){
+                var e=this[0],nextElem=e.nextSibling,mobj=this;
+                mobj.length=0;
+                while(nextElem&&nextElem.nodeType===3)
+                {
+                    nextElem=nextElem.nextSibling;
+                    mobj.push(nextElem);
+                }
+                return mobj;
+            };
+            this.prev=function(){
+                var e=this[0],prevElem=e.previousSibling,mobj=this;
+                mobj.length=0;
+                while(prevElem&&prevElem.nodeType===3)
+                {
+                    prevElem=prevElem.previousSibling;
+                    mobj.push(prevElem);
+                }
+                return mobj;
+            };
             this.html=function(htmlstr){
                 var elem=this;
                 if(htmlstr!==undefined) 
@@ -139,13 +159,7 @@
             };
             this.after=function(htmlstr){
                 var elem=this;
-                if(htmlstr instanceof Node)
-                {
-                    // for(var i=0;i<elem.length;i++)
-                    // {
-                    //     elem.parentNode.appendChild(htmlstr);
-                    // }
-                }
+                if(htmlstr instanceof Node) elem[0].parentNode.insertBefore(htmlstr,elem[0].nextSibling);
                 else
                 {
                     for(var i=0;i<elem.length;i++)
@@ -156,12 +170,7 @@
             };
             this.before=function(htmlstr){
                 var elem=this;
-                if(htmlstr instanceof Node)
-                {
-                    
-                    // elem.parentNode.appendChild(htmlstr);
-                    
-                }
+                if(htmlstr instanceof Node) elem[0].parentNode.insertBefore(htmlstr,elem[0]);
                 else
                 {
                     for(var i=0;i<elem.length;i++)
@@ -214,6 +223,32 @@
                     obj[i].parentNode.removeChild(obj[i]);
                 }
                 return obj;
+            };
+            this.on=function(event,target,fun){
+                var obj=this;
+                if(target.constructor==Function)
+                {
+                    for(var i=0;i<obj.length;i++)
+                    {
+                        obj[i].addEventListener(event,function(e){target(e);},false);
+                    }
+                }
+                else
+                {
+                    for(var i=0;i<obj.length;i++)
+                    {
+                        obj[i].addEventListener(event,function(e){
+                            var t=e.target,all=doc.querySelectorAll(target);
+                            for(var i=0;i<all.length;i++)
+                            {
+                                if(t==all[i])
+                                {
+                                    fun(e);
+                                }
+                            }
+                        },false);
+                    }
+                }
             };
         }
         MobileObj.prototype=one?new Array(one):new Array();
@@ -578,8 +613,8 @@
             obj.dom("body").appendChild(mobile_alert_bg);
             obj.preventPenetration({"targetStr":'.mobile_alert_bg',"specialStr":''});
         };
-        this.calendar=function(element){//样式可自己修改
-            var mobile=this,
+        this.calendar=function(selector){//样式可自己修改
+            var mobile=this,element=mobile.dom(selector),
             today=new Date(),
             year=today.getFullYear(),
             month=today.getMonth(),
@@ -597,6 +632,7 @@
                 loadCalendarHead(year,month);
                 loadMonth(year,month,date);
                 mobile.pop(popconfigobj);
+                mobile_calendar.addClass("animated bounceIn");
                 return;
             } 
             else loadBasicHtml();
@@ -633,9 +669,10 @@
                 if(today.getMonth()+1==month) loadMonth(year,month-1,today.getDate());
                 else loadMonth(year,month-1,null)
             };
-            
-            mobile.pop(popconfigobj);
-
+            element.onclick=function(e){
+                mobile.pop(popconfigobj);
+                mobile.one(".mobile_calendar").addClass("animated bounceIn");
+            }
             function loadMonth(year,month,date)
             {
                 
@@ -687,7 +724,7 @@
                         element.value=date_val;
                         mobile.removePop(popconfigobj);
                     }
-                });
+                },false);
             }
             function loadBasicHtml()
             {
