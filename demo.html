@@ -6,8 +6,9 @@
     <script type="text/javascript" src="Lib/Cmobile.js"></script>
     <link rel="stylesheet" type="text/css" href="Lib/Cmobile.css">
     <style type="text/css">
-        body{font-family: ""\5fae\8f6f\96c5\9ed1", "Microsoft YaHei", SimHei, Helvetica, Arial, SimSun;";font-size: 15px;}
+        body{font-family: "\5fae\8f6f\96c5\9ed1", "Microsoft YaHei", SimHei, Helvetica, Arial, SimSun;font-size: 15px;max-width: 640px;margin: 0 auto;}
         body>div{/*border:1px solid gray;*/margin-top: 10px;}
+        .border{border:1px solid #969696;}
         .slide{width: 300px;height: 150px;margin: 10px auto;}
         p{width: 300px;margin: 0 auto;}
         .countdown{margin: 10px auto;}
@@ -19,7 +20,7 @@
 </head>
 <body>
     <p style="font-size:20px">The Demo for Cmobile.js</p>
-    <div>
+    <div class="border">
         <p>The Demo For Slide Component </p>
         <div class="slide"></div>
         <script type="text/javascript">
@@ -34,7 +35,7 @@
             });
         </script>
     </div>
-    <div>
+    <div class="border">
         <p>The Demo For CountDown Component </p>
         <div class="countdown">
             <span class="day"></span>:
@@ -46,7 +47,7 @@
             mobile.countDown(new Date(2015,12,30,00,00),{"day":false,"hour":true,"minute":true,"second":true});
         </script>
     </div>
-    <div>
+    <div class="border">
         <p>The Demo For Pop Component </p>
         <div class="pop_btn">Click for pop</div>
         <div class="alert_btn">Alert for pop</div>
@@ -90,7 +91,7 @@
             });
         </script>
     </div>
-    <div class="cc">
+    <div class="cc border">
         <input type="text" />
     </div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
@@ -114,7 +115,9 @@
         </ul>
     </div> -->
     <script type="text/javascript" style="-webkit-ime-mode:disabled;ime-mode:disabled" >
-    mobile.calendar(".cc input");
+    mobile.calendar(".cc input",{
+        "format":"yy-MM-dd 周day"
+    });
         
     </script>
 </body>

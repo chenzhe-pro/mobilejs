@@ -317,14 +317,14 @@
             var width=document.documentElement.clientWidth;
             var Standard=originSize/(maxWidth*1.0/width);
             Standard=Standard>100?100:Standard;
-            documenStandard=this.dom("html").style.fontSize=Standard+"px";
+            this.dom("html").style.fontSize=Standard+"px";
             return;
         };
         this.slide=function(slidetype,elem,number,urlarray,linkarray,obj,timestr,auto,autotime){//样式自己添加
             var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX,mobile=this;
             elem.style.cssText="overflow:hidden;position:relative";
             div.style.display="-webkit-box";
-            div.style.webkitTransition="-webkit-transform "+timestr;
+            div.style.webkitTransition="-webkit-transform "+timestr+" cubic-bezier(0.18, 0.89, 0.82, 1.16)";
             if(slidetype==1)
             {
                 this.one(index).css1("width:"+obj.width+"px;text-align:right;position:absolute;bottom:0;color:white;padding-bottom:5px");
@@ -520,8 +520,6 @@
                 div.setAttribute("style","width: 100%;height: 100%;position: fixed;top:0;left: 0;z-index:60;margin:0;background-color: rgba(168,173,176,"+stylestr+");");
                 document.querySelector("body").appendChild(div);
             }
-            //if(!multi)
-            //    $('.pop').addClass("none");
             elem.style.display=configObj.elementDisplay;
             var havepoplist=document.querySelectorAll(".havePop");
             if(havepoplist.length>0)
@@ -553,55 +551,36 @@
         this.removePop=function(configObj){
             var mobile=this;
             mobile.one(configObj.elementStr).css1("display:none").removeClass("havePop");
-            if(mobile.all(".havePop").length==0) mobile.one(".pop_bg").remove();
+            mobile.all(".havePop").length==0&&(mobile.one(".pop_bg").remove());
         };
         this.alert=function(alertStr,type,fun) {
             var obj=this,mobile_alert_bg=doc.createElement("div"),pageWidth=doc.documentElement.clientWidth,
                 pageHeight=doc.documentElement.clientHeight;
-            if(obj.dom(".mobile_alert")) {
-                return;
-            }
+            if(obj.dom(".mobile_alert")) return;
+            var div=doc.createElement("div");
+            div.className="mobile_alert";
             if(type==1)
             {
-                var innerhtmlstr = "<p>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 5px 7px;'>确定</span></div>";
-                var div=doc.createElement("div");
+                var innerhtmlstr = "<p style='color:#fff;'>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 5px 7px;'>确定</span></div>";
                 div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
-                div.className="mobile_alert";
                 div.innerHTML=innerhtmlstr;
-                doc.querySelector("body").appendChild(div);
-                var width=obj.dom(".mobile_alert").offsetWidth;
-                obj.dom(".mobile_alert").style.left=(pageWidth-width)/2+"px";
-                obj.dom(".alert_sure").addEventListener("touchend",function(e){
-                    e.preventDefault();
-                    if(fun)
-                        fun();
-                    else
-                    {
-                        obj.dom("body").removeChild(obj.dom(".mobile_alert"));
-                        obj.dom("body").removeChild(mobile_alert_bg);
-                    }
-                })
             }
             else if(type==2)
             {
-                var innerhtmlstr = "<p>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_cancel' style='font-size: 15px;background-color: ;letter-spacing: 2px;margin-right: 15px;padding: 5px 7px;'>取消</span><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 4px 6px;'>确定</span></div>";
-                var div=doc.createElement("div");
+                var innerhtmlstr = "<p style='color:#fff;'>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_cancel' style='font-size: 15px;background-color: ;letter-spacing: 2px;margin-right: 15px;padding: 5px 7px;'>取消</span><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 4px 6px;'>确定</span></div>";
                 div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
-                div.className="mobile_alert";
                 div.innerHTML=innerhtmlstr;
-                doc.querySelector("body").appendChild(div);
-                var width=obj.dom(".mobile_alert").offsetWidth;
-                obj.dom(".mobile_alert").style.left=(pageWidth-width)/2+"px";
-                obj.dom(".alert_sure").addEventListener("touchend",function(e){
-                    e.preventDefault();
-                    if(fun)
-                        fun();
-                    else
-                    {
-                        obj.dom("body").removeChild(obj.dom(".mobile_alert"));
-                        obj.dom("body").removeChild(mobile_alert_bg);
-                    }
-                });
+            }
+            doc.querySelector("body").appendChild(div);
+            var width=obj.dom(".mobile_alert").offsetWidth;
+            obj.dom(".mobile_alert").style.left=(pageWidth-width)/2+"px";
+            obj.dom(".alert_sure").addEventListener("touchend",function(e){
+                e.preventDefault();
+                fun&&fun();
+                obj.dom("body").removeChild(obj.dom(".mobile_alert"));
+                obj.dom("body").removeChild(mobile_alert_bg);
+            });
+            if(type==2){
                 obj.dom(".alert_cancel").addEventListener("touchend",function(e){
                     e.preventDefault();
                     obj.dom("body").removeChild(obj.dom(".mobile_alert"));
@@ -613,7 +592,7 @@
             obj.dom("body").appendChild(mobile_alert_bg);
             obj.preventPenetration({"targetStr":'.mobile_alert_bg',"specialStr":''});
         };
-        this.calendar=function(selector){//样式可自己修改
+        this.calendar=function(selector,obj){//样式可自己修改
             var mobile=this,element=mobile.dom(selector),
             today=new Date(),
             year=today.getFullYear(),
@@ -672,7 +651,7 @@
             element.onclick=function(e){
                 mobile.pop(popconfigobj);
                 mobile.one(".mobile_calendar").addClass("animated bounceIn");
-            }
+            };
             function loadMonth(year,month,date)
             {
                 
@@ -686,20 +665,19 @@
                 if((year%4==0&&year%100!=0)||(year%400==0))
                     month_dates_arr[1]=29;
                 dates=month_dates_arr[month];
-                for(var i=0;i<7;i++)//确定起始点
+                for(var i=0;i<7;i++)//确定该月起始点
                 {
                     if(day_li[i].getAttribute("i")==d)
                     {
-                        li_str+=("<li date='1' class='canclick'>1</li>");
-                        dd++;
+                        li_str+=("<li date='1' i="+d+" class='canclick'>1</li>");
                         break;
                     }
-                    else li_str+=("<li date='' class=''></li>");
+                    else li_str+=("<li date='' i='' class=''></li>");
                 }
                 for(var i=1;i<dates;i++)
                 {
-                    li_str+=("<li date='"+dd+"' class='canclick'>"+dd+"</li>");
-                    dd++;
+                    if(d==6) d=0; else d++;
+                    li_str+=("<li date='"+(i+1)+"' i='"+d+"' class='canclick'>"+(i+1)+"</li>");
                 }
                 mobile.one(".dates_table").html("");
                 mobile.one(".dates_table").append(li_str);
@@ -714,13 +692,25 @@
             }
             function loadCalendarEvent()
             {
+                var formatStr=obj.format;
                 mobile.dom(".dates_table").addEventListener("click",function(e){
                     var target=e.target;
                     var year=mobile.one(".mobile_calendar .mon").attr("year"),
                     month=mobile.one(".mobile_calendar .mon").attr("month");
                     if(mobile.one(target).hasClass("canclick"))
                     {
-                        var date_val=year+"-"+month+"-"+target.getAttribute("date");
+                        var dayCN;
+                        switch (target.getAttribute("i"))
+                        {
+                            case "1":dayCN="一";break;
+                            case "2":dayCN="二";break;
+                            case "3":dayCN="三";break;
+                            case "4":dayCN="四";break;
+                            case "5":dayCN="五";break;
+                            case "6":dayCN="六";break;
+                            case "0":dayCN="日";break;
+                        }
+                        var date_val=formatStr.replace('yy',year).replace('MM',month).replace('dd',target.getAttribute("date")).replace("day",dayCN);
                         element.value=date_val;
                         mobile.removePop(popconfigobj);
                     }
