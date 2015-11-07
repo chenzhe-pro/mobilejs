@@ -4,7 +4,6 @@
  * 不依赖任何第三方类库，兼容主流浏览器，不支持IE8及以下版本
  **/
 (function(doc,win){
-    var indexOfSlide=0,initflg=false;
     function GetMobileObj(one)
     {
         //Init mobile core API,mobile核心库（实例化MobileObj对象并加载核心库）。ps:核心库和功能库完全独立
@@ -75,20 +74,14 @@
             this.children=function(){
                 var e=this[0],children=e.children,mobj=this;
                 mobj.length=0;
-                for(var i=0;i<children.length;i++)
-                {
-                    mobj.push(children[i]);
-                }
+                Array.prototype.push.apply(mobj,children);
                 return mobj;
             };
             this.find=function(selector){
                 var e=this[0],mobj=this;
                 mobj.length=0;
                 var children=e.querySelectorAll(selector);
-                for(var i=0;i<children.length;i++)
-                {
-                    mobj.push(children[i]);
-                }
+                Array.prototype.push.apply(mobj,children);
                 return mobj;
             };
             this.next=function(){
@@ -121,7 +114,7 @@
                     }
                 }
                 else return elem[0].innerHTML;
-                return ;
+                return elem;
             };
             this.append=function(htmlstr){
                 var elem=this;
@@ -285,10 +278,7 @@
             {
                 mobileobj=new GetMobileObj();
                 all=doc.querySelectorAll(selector);
-                for(var i=0;i<all.length;i++)
-                {
-                    mobileobj.push(all[i]);
-                }
+                Array.prototype.push.apply(mobileobj,all);
             }
             return  mobileobj;
         };
@@ -321,7 +311,7 @@
             return;
         };
         this.slide=function(slidetype,elem,number,urlarray,linkarray,obj,timestr,auto,autotime){//样式自己添加
-            var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX,mobile=this;
+            var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX,mobile=this,indexOfSlide=0;
             elem.style.cssText="overflow:hidden;position:relative";
             div.style.display="-webkit-box";
             div.style.webkitTransition="-webkit-transform "+timestr+" cubic-bezier(0.18, 0.89, 0.82, 1.16)";
@@ -676,7 +666,7 @@
                 }
                 for(var i=1;i<dates;i++)
                 {
-                    if(d==6) d=0; else d++;
+                    d=d==6?0:d+1;
                     li_str+=("<li date='"+(i+1)+"' i='"+d+"' class='canclick'>"+(i+1)+"</li>");
                 }
                 mobile.one(".dates_table").html("");

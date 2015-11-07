@@ -15,7 +15,7 @@
         .countdown span{background-color: gray;display: inline-block;width: 30px;height: 30px;border-radius: 10px 10px;text-align: center;line-height: 30px;}
         .pop{display: none;width: 70%;background-color: #999;height: 200px;text-align: center;}
         .pop-1{display: none;width: 60%;background-color: #bbb;height: 150px;text-align: center;}
-        .pop_btn{width: 120px;background-color: #888;margin: 10px auto;border-radius: 10px 10px;text-align: center;}
+        .pop_btn{width: 120px;background-color: #888;margin: 10px auto;border-radius: 10px 10px;text-align: center;font-family: "\5fae\8f6f\96c5\9ed1", "Microsoft YaHei", SimHei, Helvetica, Arial, SimSun}
     </style>
 </head>
 <body>
@@ -97,28 +97,15 @@
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
-    
-    <!-- <div class="mobile_calendar">
-        <div class="mon" year="" month=""><span class="month_ctrl prev_month"><span></span></span><span class="calendar_year"></span><span>年</span><span class="calendar_month"></span><span>月</span><span class="month_ctrl next_month"><span></span></span></div>
-        <ul class="calendar_day">
-            <li i='1'>一</li>
-            <li i='2'>二</li>
-            <li i='3'>三</li>
-            <li i='4'>四</li>
-            <li i='5'>五</li>
-            <li i='6'>六</li>
-            <li i='0'>日</li>
-        </ul>
-        
-        <ul class="dates_table">
-            
-        </ul>
-    </div> -->
+    <button id="fun" onclick="fun()" value="fun"></button>
+    <input type="button" id="show" value="show" onclick="show()">
+
     <script type="text/javascript" style="-webkit-ime-mode:disabled;ime-mode:disabled" >
     mobile.calendar(".cc input",{
         "format":"yy-MM-dd 周day"
     });
-        
+//        function fun(){alert(1)}
+//    function show(){alert(1)}
     </script>
 </body>
 </html>
