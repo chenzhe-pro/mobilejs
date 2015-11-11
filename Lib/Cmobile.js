@@ -417,38 +417,31 @@
             }
             var tt=auto&&setInterval(autoSlide,autotime);
         };
-        this.lazyLoad=function(elemarray,lazytype,lazyurl){
-            function pagefun()
+        this.lazyLoad=function(imgSelector){
+            var mobile=this,imgarr=mobile.all(imgSelector),
+                bottom=document.body.scrollTop+document.documentElement.clientHeight;
+            for(var i=0;i<imgarr.length;i++)
             {
-                var arr=[];
-                for(var i=0;i<elemarray.length;i++)
+                if(imgarr[i].offsetTop<=bottom)
                 {
-                    if(elemarray[i].tagName.indexOf("IMG")>-1)
+                    imgarr[i].src=imgarr[i].getAttribute("data-src");
+                    imgarr[i].setAttribute("haveLoaded",'1');
+                }
+            }
+            mobile.dom("body").addEventListener("touchmove",function(e){
+                bottom=document.body.scrollTop+document.documentElement.clientHeight;
+                for(var i=0;i<imgarr.length;i++)
+                {
+                    if(imgarr[i].getAttribute("haveLoaded")!=='1')
                     {
-                        arr.push(elemarray[i].src);
-                        elemarray[i].src=lazyurl;
-                    }
-                    else
-                    {
-                        arr.push(elemarray[i].style.backgroundImage);
-                        elemarray[i].style.backgroundImage="url("+lazyurl+")";
-                        elemarray[i].style.backgroundPosition="center";
+                        if(imgarr[i].offsetTop<=bottom)
+                        {
+                            imgarr[i].src=imgarr[i].getAttribute("data-src");
+                            imgarr[i].setAttribute("haveLoaded",'1');
+                        }
                     }
                 }
-                win.addEventListener("load",function(){
-                    for(var j=0;j<elemarray.length;j++)
-                    {
-                        if(elemarray[j].tagName.indexOf("IMG")>-1)
-                            elemarray[j].src=arr[j];
-                        else
-                            elemarray[j].style.backgroundImage=arr[j];
-                    }
-
-                });
-                return;
-            }
-            lazytype==="page"&&pagefun();
-            lazytype==="slide"&&slidefun();
+            });
         };
         this.countDown=function(enddate,showobj){//样式可自己修改
             var obj=this;
@@ -460,21 +453,10 @@
                 var lasth=parseInt(lasttime/(1000*60*60)-lastd*24);
                 var lastm=parseInt(lasttime/(1000*60)-lastd*24*60-lasth*60);
                 var lasts=parseInt(lasttime/(1000)-lastd*24*60*60-lasth*60*60-lastm*60);
-                if(Math.floor(lastd/10)===0)
-                {
-                    lastd="0"+lastd;
-                }
-                if(Math.floor(lasth/10)===0)
-                {
-                    lasth="0"+lasth;
-                }
-                if(Math.floor(lastm/10)===0)
-                {
-                    lastm="0"+lastm;
-                }if(Math.floor(lasts/10)===0)
-                {
-                    lasts="0"+lasts;
-                }
+                lastd=lastd.addZeroNumber();
+                lasth=lasth.addZeroNumber();
+                lastm=lastm.addZeroNumber();
+                lasts=lasts.addZeroNumber();
                 if(!showobj)
                 {
                     obj.dom(".day").innerHTML=lastd;
@@ -669,8 +651,7 @@
                     d=d==6?0:d+1;
                     li_str+=("<li date='"+(i+1)+"' i='"+d+"' class='canclick'>"+(i+1)+"</li>");
                 }
-                mobile.one(".dates_table").html("");
-                mobile.one(".dates_table").append(li_str);
+                mobile.one(".dates_table").html("").append(li_str);
                 if(date) mobile.all("li[date='"+date+"']").addClass("today");
             }
             function loadCalendarHead(year,month)
@@ -713,7 +694,7 @@
             }
         };
     }
-    function DeviceInfo(doc,win)
+    function deviceInfo(doc,win)
     {
         this.UA=win.navigator.userAgent;
         this.PhoneWidth=win.screen.width;
@@ -723,10 +704,10 @@
     function mobileCommon(meta)
     {
         this.metaelem=doc.querySelectorAll("meta");
-        this.mobilemeta="<meta name=\"apple-mobile-web-app-capable\" content=\"yes\" \/>"+
-        "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" \/>"+
-        "<meta content=\"telephone=no\" name=\"format-detection\" \/>"+
-        "<meta name=\"viewport\" content=\"initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui\" \/>"
+        this.mobilemeta="<meta name='apple-mobile-web-app-capable' content='yes' \/>"+
+        "<meta name='apple-mobile-web-app-status-bar-style' content='black' \/>"+
+        "<meta content='telephone=no' name='format-detection' \/>"+
+        "<meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui' \/>"
         this.f=function(){
             for(var i=0;i<this.metaelem.length;i++)
             {
@@ -740,13 +721,26 @@
         };
         this.f();
     }
-    // mobile.prototype=new mobileFunctions();
+    (function addAPI()
+    {
+        function numberAPI()
+        {
+            Number.prototype.addZeroNumber=function(){
+                var numstr=this.toString();//this指向调用该方法的对象
+                if(numstr.length==1)
+                {
+                    numstr='0'+numstr;
+                }
+                return numstr;
+            }
+        }
+        numberAPI();
+    })();
     mobile.prototype.mobilecommon=new mobileCommon();
-    mobile.prototype.deviceinfo=new DeviceInfo(doc,win);
+    mobile.prototype.deviceinfo=new deviceInfo(doc,win);
     var mobile=new mobile();
     mobile.autoChange(640,100);
     mobile.readOnly=true;
     win.mobile=mobile;
-    // MobileObj.prototype=mobile;
 })(document,window);
 

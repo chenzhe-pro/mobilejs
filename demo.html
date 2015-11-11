@@ -8,6 +8,7 @@
     <style type="text/css">
         body{font-family: "\5fae\8f6f\96c5\9ed1", "Microsoft YaHei", SimHei, Helvetica, Arial, SimSun;font-size: 15px;max-width: 640px;margin: 0 auto;}
         body>div{/*border:1px solid gray;*/margin-top: 10px;}
+        img{max-width: 100%;}
         .border{border:1px solid #969696;}
         .slide{width: 300px;height: 150px;margin: 10px auto;}
         p{width: 300px;margin: 0 auto;}
@@ -16,6 +17,7 @@
         .pop{display: none;width: 70%;background-color: #999;height: 200px;text-align: center;}
         .pop-1{display: none;width: 60%;background-color: #bbb;height: 150px;text-align: center;}
         .pop_btn{width: 120px;background-color: #888;margin: 10px auto;border-radius: 10px 10px;text-align: center;font-family: "\5fae\8f6f\96c5\9ed1", "Microsoft YaHei", SimHei, Helvetica, Arial, SimSun}
+        .one{width: 49%;float: left;}
     </style>
 </head>
 <body>
@@ -97,15 +99,27 @@
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
     <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
-    <button id="fun" onclick="fun()" value="fun"></button>
-    <input type="button" id="show" value="show" onclick="show()">
-
-    <script type="text/javascript" style="-webkit-ime-mode:disabled;ime-mode:disabled" >
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1441527782575.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1438913663261.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1438913654618.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1444631980385.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1435029612508.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1435029621252.jpg" alt="" class="one" style="height: 180px;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+    <ul>
+        <li></li>
+    </ul>
+    <script type="text/javascript">
     mobile.calendar(".cc input",{
         "format":"yy-MM-dd 周day"
     });
-//        function fun(){alert(1)}
-//    function show(){alert(1)}
+    mobile.lazyLoad(".one");
+
     </script>
 </body>
 </html>
