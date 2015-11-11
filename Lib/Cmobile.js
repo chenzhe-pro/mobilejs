@@ -120,10 +120,7 @@
                 var elem=this;
                 if(htmlstr instanceof Node)
                 {
-                    for(var i=0;i<elem.length;i++)
-                    {
-                        elem[i].appendChild(htmlstr);
-                    }
+                        elem[0].appendChild(htmlstr);
                 }
                 else
                 {
@@ -425,7 +422,7 @@
                 if(imgarr[i].offsetTop<=bottom)
                 {
                     imgarr[i].src=imgarr[i].getAttribute("data-src");
-                    imgarr[i].setAttribute("haveLoaded",'1');
+                    imgarr[i].setAttribute("haveLoaded",'1');alert(1);
                 }
             }
             mobile.dom("body").addEventListener("touchmove",function(e){
@@ -490,10 +487,10 @@
                 div.className="pop_bg";
                 var stylestr=configObj.opacity?configObj.opacity/100 :.5;
                 div.setAttribute("style","width: 100%;height: 100%;position: fixed;top:0;left: 0;z-index:60;margin:0;background-color: rgba(168,173,176,"+stylestr+");");
-                document.querySelector("body").appendChild(div);
+                obj.one("body").append(div);
             }
             elem.style.display=configObj.elementDisplay;
-            var havepoplist=document.querySelectorAll(".havePop");
+            var havepoplist=obj.all(".havePop");
             if(havepoplist.length>0)
                 obj.one(elem).css1("position: fixed;z-index:"+(parseInt(havepoplist[havepoplist.length-1].style.zIndex)+1)+";left:"+(bodywidth-elem.offsetWidth)/2+"px;top:"+configObj.top+"px");
             else
@@ -527,41 +524,41 @@
         };
         this.alert=function(alertStr,type,fun) {
             var obj=this,mobile_alert_bg=doc.createElement("div"),pageWidth=doc.documentElement.clientWidth,
-                pageHeight=doc.documentElement.clientHeight;
+                pageHeight=doc.documentElement.clientHeight,
+                innerhtmlstr,
+                divCssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
             if(obj.dom(".mobile_alert")) return;
             var div=doc.createElement("div");
             div.className="mobile_alert";
             if(type==1)
             {
-                var innerhtmlstr = "<p style='color:#fff;'>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 5px 7px;'>确定</span></div>";
-                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
-                div.innerHTML=innerhtmlstr;
+                innerhtmlstr = "<p style='color:#fff;'>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 5px 7px;'>确定</span></div>";
             }
             else if(type==2)
             {
-                var innerhtmlstr = "<p style='color:#fff;'>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_cancel' style='font-size: 15px;background-color: ;letter-spacing: 2px;margin-right: 15px;padding: 5px 7px;'>取消</span><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 4px 6px;'>确定</span></div>";
-                div.style.cssText="width:55%;padding:10px;position: fixed;z-index:1000;top:40%;border-radius: 6px 6px;text-align: center;background-color: rgba(25,24,24,.9);color:#fff;font-size:14px;display:block;word-break:break-all;word-wrap:break-word;";
-                div.innerHTML=innerhtmlstr;
+                innerhtmlstr = "<p style='color:#fff;'>"+alertStr+"</p><div style='margin-top: 10px;'><span class='alert_cancel' style='font-size: 15px;background-color: ;letter-spacing: 2px;margin-right: 15px;padding: 5px 7px;'>取消</span><span class='alert_sure' style='font-size: 15px;background-color: ;letter-spacing: 2px;padding: 4px 6px;'>确定</span></div>";
             }
-            doc.querySelector("body").appendChild(div);
+            div.style.cssText=divCssText;
+            div.innerHTML=innerhtmlstr;
+            obj.one("body").append(div);
             var width=obj.dom(".mobile_alert").offsetWidth;
             obj.dom(".mobile_alert").style.left=(pageWidth-width)/2+"px";
             obj.dom(".alert_sure").addEventListener("touchend",function(e){
                 e.preventDefault();
                 fun&&fun();
-                obj.dom("body").removeChild(obj.dom(".mobile_alert"));
-                obj.dom("body").removeChild(mobile_alert_bg);
+                obj.one(".mobile_alert").remove();
+                obj.one(mobile_alert_bg).remove();
             });
             if(type==2){
                 obj.dom(".alert_cancel").addEventListener("touchend",function(e){
                     e.preventDefault();
-                    obj.dom("body").removeChild(obj.dom(".mobile_alert"));
-                    obj.dom("body").removeChild(mobile_alert_bg);
+                    obj.one(".mobile_alert").remove();
+                    obj.one(mobile_alert_bg).remove();
                 });
             }
             mobile_alert_bg.style.cssText="position:fixed;top:0;left:0;z-index:999;background-color: rgba(25,24,24,0.1);height:"+pageHeight+"px;width:"+pageWidth+"px";
             mobile_alert_bg.className="mobile_alert_bg";
-            obj.dom("body").appendChild(mobile_alert_bg);
+            obj.one("body").append(mobile_alert_bg);
             obj.preventPenetration({"targetStr":'.mobile_alert_bg',"specialStr":''});
         };
         this.calendar=function(selector,obj){//样式可自己修改
@@ -656,8 +653,7 @@
             }
             function loadCalendarHead(year,month)
             {
-                mobile.one(".mon").attr("year",year);
-                mobile.one(".mon").attr("month",month+1);
+                mobile.one(".mon").attr("year",year).attr("month",month+1);
                 mobile.one(".calendar_year").html(year);
                 mobile.one(".calendar_month").html(month+1);
             }
