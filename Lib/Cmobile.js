@@ -57,7 +57,7 @@
                 mobj.length=0;
                 if(!selector) 
                 {
-                    mobj.push(e.parentNode)
+                    mobj.push(e.parentNode);
                     return mobj;
                 }
                 parent=doc.querySelector(selector);
@@ -240,6 +240,7 @@
                     }
                 }
             };
+
         }
         MobileObj.prototype=one?new Array(one):new Array();
         return new MobileObj();
@@ -417,33 +418,27 @@
         this.lazyLoad=function(imgSelector){
             var mobile=this,imgarr=mobile.all(imgSelector),
                 bottom=document.body.scrollTop+document.documentElement.clientHeight;
-            for(var i=0;i<imgarr.length;i++)
-            {
-                if(imgarr[i].offsetTop<=bottom)
-                {
-                    imgarr[i].src=imgarr[i].getAttribute("data-src");
-                    imgarr[i].setAttribute("haveLoaded",'1');alert(1);
-                }
-            }
+            loadImg();
             mobile.dom("body").addEventListener("touchmove",function(e){
                 bottom=document.body.scrollTop+document.documentElement.clientHeight;
+                loadImg();
+            });
+            function loadImg()
+            {
                 for(var i=0;i<imgarr.length;i++)
                 {
-                    if(imgarr[i].getAttribute("haveLoaded")!=='1')
+                    if(imgarr[i].offsetTop<=bottom)
                     {
-                        if(imgarr[i].offsetTop<=bottom)
-                        {
-                            imgarr[i].src=imgarr[i].getAttribute("data-src");
-                            imgarr[i].setAttribute("haveLoaded",'1');
-                        }
+                        imgarr[i].src=imgarr[i].getAttribute("data-src");
+                        imgarr.splice(i,1);
+                        i--;
                     }
                 }
-            });
+            }
         };
         this.countDown=function(enddate,showobj){//样式可自己修改
             var obj=this;
             function timeout(){
-                // this;
                 var nowdate=new Date();
                 var lasttime=enddate.valueOf()-nowdate.valueOf();
                 var lastd=parseInt(lasttime/(1000*60*60*24));
@@ -475,7 +470,7 @@
             };
             setInterval(timeout,1000);
         };
-        this.loadMore=function(configobj){
+        this.autoLoadMore=function(configobj){
             
         };
         this.pop=function(configObj){
@@ -516,7 +511,7 @@
             //obj.preventPenetration({"targetStr":configObj.elementStr,"specialStr":''});
             obj.preventPenetration({"targetStr":'.pop_bg',"specialStr":''});
             return configObj;
-        }
+        };
         this.removePop=function(configObj){
             var mobile=this;
             mobile.one(configObj.elementStr).css1("display:none").removeClass("havePop");
@@ -594,10 +589,7 @@
                 year=mobile.one(".mobile_calendar .mon").attr("year"),
                 month=mobile.one(".mobile_calendar .mon").attr("month");
                 if(month==1)
-                {
-                    year--;
-                    month=12;
-                }
+                    month=(year--,12);
                 else month--;
                 loadCalendarHead(year,month-1);
                 if(today.getMonth()+1==month) loadMonth(year,month-1,today.getDate());
@@ -609,8 +601,7 @@
                 month=mobile.one(".mobile_calendar .mon").attr("month");
                 if(month==12)
                 {
-                    year++;
-                    month=1;
+                    month=(year++,1);
                 }
                 else month++;
                 loadCalendarHead(year,month-1);
@@ -689,6 +680,73 @@
                 mobile.one("body").append(htmlstr);
             }
         };
+        this.ajax=function(configobj){
+            if(!XMLHttpRequest) return ;
+            var xhr = new XMLHttpRequest (),type=configobj.type,url=configobj.url,d=configobj.data;
+            xhr.onreadystatechange = function () {
+                var data;
+                if (xhr.readyState == 4) {
+                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+                        clearTimeout(timeout);
+                        switch(configobj.dataType)
+                        {
+                            case "xml":data=xhr.responseXML;break;
+                            case "text":
+                            case "html":
+                            case "script":data=xhr.responseText;break;
+                            case "json":data=eval("("+xhr.responseText+")");break;
+
+                        }
+                        configobj.success(data);
+                    }
+                    else
+                    {
+                        configobj.error();
+                    }
+                }
+            };
+            if(type.toUpperCase()=="GET")
+            {
+                getRequest();
+            }
+            else if(type.toUpperCase()=="POST")
+            {
+                postRequest();
+            }
+            else return;
+            var timeout = setTimeout( function () {
+                xhr.abort(); // call error callback
+            }, configobj.timeout*1000);
+            function getRequest()
+            {
+                for(var i in d)
+                {
+                    if(url.contain("?"))
+                    {
+                        url+=("&"+i+"="+d[i]);
+                    }
+                    else url+=("?"+i+"="+d[i]);
+                }
+                xhr.open(type, encodeURI(url), true);
+                xhr.send(null);
+            }
+            function postRequest()
+            {
+                var param='';
+                for(var i in d)
+                {
+                    param+=("&"+i+"="+d[i]);
+                }
+                xhr.open(type,encodeURI(url),true);
+                if(param.length>0)
+                {
+                    param=param.substr(1,param.length-1);
+                    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                    xhr.send(param);
+                }
+                else xhr.send();
+            }
+        }
     }
     function deviceInfo(doc,win)
     {
@@ -730,7 +788,15 @@
                 return numstr;
             }
         }
+        function stringAPI()
+        {
+            String.prototype.contain=function(str){
+                if(this.indexOf(str)>-1) return true;
+                else return false;
+            }
+        }
         numberAPI();
+        stringAPI();
     })();
     mobile.prototype.mobilecommon=new mobileCommon();
     mobile.prototype.deviceinfo=new deviceInfo(doc,win);
