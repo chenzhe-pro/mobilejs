@@ -415,14 +415,16 @@
             }
             var tt=auto&&setInterval(autoSlide,autotime);
         };
-        this.lazyLoad=function(imgSelector){
-            var mobile=this,imgarr=mobile.all(imgSelector),
-                bottom=document.body.scrollTop+document.documentElement.clientHeight;
+        this.lazyLoad=function(imgarr){
+            var mobile=this,height=document.documentElement.clientHeight;
+            bottom=document.body.scrollTop+height;
             loadImg();
-            mobile.dom("body").addEventListener("touchmove",function(e){
-                bottom=document.body.scrollTop+document.documentElement.clientHeight;
+            mobile.dom("body").removeEventListener("touchmove",movefun,false);
+            mobile.dom("body").addEventListener("touchmove",movefun,false);
+            function movefun(){
+                bottom=document.body.scrollTop+height;
                 loadImg();
-            });
+            }
             function loadImg()
             {
                 for(var i=0;i<imgarr.length;i++)
@@ -430,6 +432,7 @@
                     if(imgarr[i].offsetTop<=bottom)
                     {
                         imgarr[i].src=imgarr[i].getAttribute("data-src");
+                        imgarr[i].setAttribute("haveLoaded",'1');
                         imgarr.splice(i,1);
                         i--;
                     }
