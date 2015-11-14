@@ -96,21 +96,23 @@
     <div class="cc border">
         <input type="text" />
     </div>
-    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
-    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
-    <div>dfghjkl;kjhgfrtghyjkmjhngbfrghnjmk.;/</div>
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1441527782575.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1438913663261.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1438913654618.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1444631980385.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1435029612508.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1435029621252.jpg" alt="" class="one" style="height: 180px;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
-    <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+    <div class="autoLoadMore" style="background: #333;padding: 20px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1441527782575.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1438913663261.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1438913654618.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1444631980385.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1435029612508.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1435029621252.jpg" alt="" class="one" style="height: 180px;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
+        <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="two" style="height: 180px;width: 100%;">
+
+    </div>
+
     <ul>
         <li></li>
     </ul>
@@ -118,8 +120,38 @@
     mobile.calendar(".cc input",{
         "format":"yy-MM-dd 周day"
     });
-    mobile.lazyLoad(mobile.all(".one"));
+//    mobile.lazyLoad(mobile.all(".one"));
+//    mobile.ajax({
+//        url:"/ajaxSource/ajax.txt",
+//        type:"post",
+//        dataType:"html",
+//        data:{b:11,c:'陈哲'},
+//        success: function(msg){
+//            alert( "Data Saved: " + msg.age );
+//            mobile.one("body").append(msg);
+//        },
+//        error: function(){
+//                alert( "ajax请求失败" );
+//            },
+//        timeout:60
+//
+//    });
+    mobile.autoLoadMore({
+        loadElement:".autoLoadMore",
+        url:"/ajaxSource/ajax.txt",
+        type:"get",
+        dataType:"html",
+        data:{b:11,c:'cz'},
+        success: function(msg){
+//            alert( "Data Saved: " + msg.age );
+            mobile.one(".autoLoadMore").append(msg);
+        },
+        error: function(){
+            alert( "ajax请求失败" );
+        },
+        timeout:60
 
+    });
     </script>
 </body>
 </html>

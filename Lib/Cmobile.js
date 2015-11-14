@@ -306,13 +306,14 @@
             var Standard=originSize/(maxWidth*1.0/width);
             Standard=Standard>100?100:Standard;
             this.dom("html").style.fontSize=Standard+"px";
+            window.font_size=Standard;
             return;
         };
         this.slide=function(slidetype,elem,number,urlarray,linkarray,obj,timestr,auto,autotime){//样式自己添加
             var div=doc.createElement("div"),index=doc.createElement("div"),imgstr="",oldX,mobile=this,indexOfSlide=0;
             elem.style.cssText="overflow:hidden;position:relative";
             div.style.display="-webkit-box";
-            div.style.webkitTransition="-webkit-transform "+timestr+" cubic-bezier(0.18, 0.89, 0.82, 1.16)";
+            div.style.webkitTransition="-webkit-transform "+timestr;
             if(slidetype==1)
             {
                 this.one(index).css1("width:"+obj.width+"px;text-align:right;position:absolute;bottom:0;color:white;padding-bottom:5px");
@@ -474,7 +475,41 @@
             setInterval(timeout,1000);
         };
         this.autoLoadMore=function(configobj){
-            
+            var mobile=this,height=document.documentElement.clientHeight,loadflg=true,
+                bottom=document.body.scrollTop+height,
+                loadElement=mobile.dom(configobj.loadElement),
+                offsetBottom=loadElement.offsetTop+loadElement.offsetHeight;
+            mobile.dom("body").addEventListener("touchmove",ajaxLoad,false);
+            function ajaxLoad()
+            {
+                bottom=document.body.scrollTop+height;
+                loadElement=mobile.dom(configobj.loadElement);
+                offsetBottom=loadElement.offsetTop+loadElement.offsetHeight;
+                console.log(bottom+","+offsetBottom)
+                if(bottom>=offsetBottom-10&&loadflg)
+                {
+                    loadflg=false;
+                    //mobile.ajax({
+                    //    url:configobj.url,
+                    //    type:configobj.type,
+                    //    dataType:configobj.dataType,
+                    //    data:configobj.data,
+                    //    success: function(data){
+                    //
+                    //        configobj.success(data);
+                    //        loadflg=true;
+                    //    },
+                    //    error: function(){
+                    //        configobj.error();
+                    //    },
+                    //    timeout:configobj.timeout
+                    //});
+                    configobj.success('<img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="two" style="height: 180px;width: 100%;">');
+                }
+
+
+            }
+
         };
         this.pop=function(configObj){
             var obj=this;
@@ -701,6 +736,7 @@
 
                         }
                         configobj.success(data);
+                        return;
                     }
                     else
                     {
