@@ -55,7 +55,7 @@
             this.parents=function(selector){
                 var e=this[0],parent,mobj=this;
                 mobj.length=0;
-                if(!selector) 
+                if(!selector)
                 {
                     mobj.push(e.parentNode);
                     return mobj;
@@ -106,7 +106,7 @@
             };
             this.html=function(htmlstr){
                 var elem=this;
-                if(htmlstr!==undefined) 
+                if(htmlstr!==undefined)
                 {
                     for(var i=0;i<elem.length;i++)
                     {
@@ -120,7 +120,7 @@
                 var elem=this;
                 if(htmlstr instanceof Node)
                 {
-                        elem[0].appendChild(htmlstr);
+                    elem[0].appendChild(htmlstr);
                 }
                 else
                 {
@@ -175,9 +175,12 @@
                 return false;
             };
             this.hide=function(){
-                var obj=this;
-                
-                return obj;
+                this.css1("display:none");
+                return this;
+            };
+            this.show=function(){
+                this.css1("display:block");
+                return this;
             };
             this.attr=function(attribute,value){
                 var obj=this;
@@ -220,32 +223,51 @@
                 {
                     for(var i=0;i<obj.length;i++)
                     {
-                        obj[i].addEventListener(event,function(e){target(e);},false);
+                        obj[i].removeEventListener(event,eventBind,false);
+                        obj[i].addEventListener(event,eventBind,false);
                     }
                 }
                 else
                 {
                     for(var i=0;i<obj.length;i++)
                     {
-                        obj[i].addEventListener(event,function(e){
-                            var t=e.target,all=doc.querySelectorAll(target);
-                            for(var i=0;i<all.length;i++)
-                            {
-                                if(t==all[i])
-                                {
-                                    fun(e);
-                                }
-                            }
-                        },false);
+                        var o=obj[i];
+                        o.removeEventListener(event,eventHandle,false);
+                        o.addEventListener(event,eventHandle,false);
+                    }
+                }
+                function eventBind(e)
+                {
+                    target(e);
+                }
+                function eventHandle(e)
+                {
+                    var t=e.target,all=o.querySelectorAll(target);
+                    for(var i=0;i<all.length;i++)
+                    {
+                        if(t==all[i])
+                        {
+                            fun(e);
+                        }
                     }
                 }
             };
+            this.off=function(event,target,fun){
 
+            };
+            this.serializeJSON=function(){
+                var obj=this,all_name=obj[0].querySelectorAll("[name]"),form_json={};
+                for(var i= 0;i<all_name.length;i++)
+                {
+                    form_json[all_name[i].name]=all_name[i].value;
+                }
+                return form_json;
+            }
         }
         MobileObj.prototype=one?new Array(one):new Array();
         return new MobileObj();
     }
-    
+
     function mobile(flg)
     {
         //Init mobile selector API,mobile选择器
@@ -280,7 +302,7 @@
             }
             return  mobileobj;
         };
-        if(!flg) 
+        if(!flg)
             mobileFunctions.call(this);
     }
     //Init mobile function API,mobile功能库
@@ -420,7 +442,6 @@
             var mobile=this,height=document.documentElement.clientHeight;
             bottom=document.body.scrollTop+height;
             loadImg();
-            mobile.dom("body").removeEventListener("touchmove",movefun,false);
             mobile.dom("body").addEventListener("touchmove",movefun,false);
             function movefun(){
                 bottom=document.body.scrollTop+height;
@@ -437,6 +458,10 @@
                         imgarr.splice(i,1);
                         i--;
                     }
+                }
+                if(imgarr.length==0)
+                {
+                    mobile.dom("body").removeEventListener("touchmove",movefun,false);
                 }
             }
         };
@@ -475,41 +500,44 @@
             setInterval(timeout,1000);
         };
         this.autoLoadMore=function(configobj){
-            var mobile=this,height=document.documentElement.clientHeight,loadflg=true,
+            var mobile=this, height=document.documentElement.clientHeight,loadflg=true,
                 bottom=document.body.scrollTop+height,
-                loadElement=mobile.dom(configobj.loadElement),
-                offsetBottom=loadElement.offsetTop+loadElement.offsetHeight;
+                loadElement=mobile.dom(configobj.loadElement),offsetBottom,
+                pageElement=mobile.one(configobj.pageElement),url=configobj.url,
+                cancelElement=mobile.one(configobj.cancelElement);
             mobile.dom("body").addEventListener("touchmove",ajaxLoad,false);
             function ajaxLoad()
             {
-                bottom=document.body.scrollTop+height;
-                loadElement=mobile.dom(configobj.loadElement);
-                offsetBottom=loadElement.offsetTop+loadElement.offsetHeight;
-                console.log(bottom+","+offsetBottom)
-                if(bottom>=offsetBottom-10&&loadflg)
+                if(cancelElement.val()==='1')
                 {
-                    loadflg=false;
-                    //mobile.ajax({
-                    //    url:configobj.url,
-                    //    type:configobj.type,
-                    //    dataType:configobj.dataType,
-                    //    data:configobj.data,
-                    //    success: function(data){
-                    //
-                    //        configobj.success(data);
-                    //        loadflg=true;
-                    //    },
-                    //    error: function(){
-                    //        configobj.error();
-                    //    },
-                    //    timeout:configobj.timeout
-                    //});
-                    configobj.success('<img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="two" style="height: 180px;width: 100%;">');
+                    mobile.dom("body").removeEventListener("touchmove",ajaxLoad,false);
+                    return;
                 }
-
-
+                bottom=document.body.scrollTop+height;
+                offsetBottom=loadElement.offsetTop+loadElement.offsetHeight;
+                console.log(bottom+","+offsetBottom);
+                if(bottom>=offsetBottom-20&&loadflg)
+                {
+                    configobj.data["page"]=pageElement.val();
+                    loadflg=false;
+                    mobile.one(loadElement).append("<p style='text-align: center;color: #666;' class='loading'>加载中...</p>");
+                    mobile.ajax({
+                        url:url,
+                        type:"get",
+                        dataType:configobj.dataType,
+                        data:configobj.data,
+                        success: function(data){
+                            mobile.one(".loading").remove();
+                            configobj.success(data);
+                            loadflg=true;
+                        },
+                        error: function(){
+                            configobj.error();
+                        },
+                        timeout:configobj.timeout
+                    });
+                }
             }
-
         };
         this.pop=function(configObj){
             var obj=this;
@@ -596,11 +624,11 @@
         };
         this.calendar=function(selector,obj){//样式可自己修改
             var mobile=this,element=mobile.dom(selector),
-            today=new Date(),
-            year=today.getFullYear(),
-            month=today.getMonth(),
-            date=today.getDate(),
-            day=today.getDay();
+                today=new Date(),
+                year=today.getFullYear(),
+                month=today.getMonth(),
+                date=today.getDate(),
+                day=today.getDay();
             var mobile_calendar=mobile.one(".mobile_calendar");
             var popconfigobj={
                 "elementStr":'.mobile_calendar',//必传
@@ -615,17 +643,17 @@
                 mobile.pop(popconfigobj);
                 mobile_calendar.addClass("animated bounceIn");
                 return;
-            } 
+            }
             else loadBasicHtml();
-            
+
             loadCalendarHead(year,month);
             loadMonth(year,month,date);
             loadCalendarEvent();
 
             mobile.dom(".mobile_calendar .prev_month").onclick=function(e){
                 var target=e.target,
-                year=mobile.one(".mobile_calendar .mon").attr("year"),
-                month=mobile.one(".mobile_calendar .mon").attr("month");
+                    year=mobile.one(".mobile_calendar .mon").attr("year"),
+                    month=mobile.one(".mobile_calendar .mon").attr("month");
                 if(month==1)
                     month=(year--,12);
                 else month--;
@@ -635,8 +663,8 @@
             };
             mobile.dom(".mobile_calendar .next_month").onclick=function(e){
                 var target=e.target,
-                year=mobile.one(".mobile_calendar .mon").attr("year"),
-                month=mobile.one(".mobile_calendar .mon").attr("month");
+                    year=mobile.one(".mobile_calendar .mon").attr("year"),
+                    month=mobile.one(".mobile_calendar .mon").attr("month");
                 if(month==12)
                 {
                     month=(year++,1);
@@ -652,7 +680,7 @@
             };
             function loadMonth(year,month,date)
             {
-                
+
                 var month_dates_arr=[31,28,31,30,31,30,31,31,30,31,30,31],
                     firstdate=new Date(year,month,1),
                     li_str='',
@@ -692,7 +720,7 @@
                 mobile.dom(".dates_table").addEventListener("click",function(e){
                     var target=e.target;
                     var year=mobile.one(".mobile_calendar .mon").attr("year"),
-                    month=mobile.one(".mobile_calendar .mon").attr("month");
+                        month=mobile.one(".mobile_calendar .mon").attr("month");
                     if(mobile.one(target).hasClass("canclick"))
                     {
                         var dayCN;
@@ -723,8 +751,8 @@
             var xhr = new XMLHttpRequest (),type=configobj.type,url=configobj.url,d=configobj.data;
             xhr.onreadystatechange = function () {
                 var data;
-                if (xhr.readyState == 4) {
-                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+                if (xhr.readyState === 4) {
+                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304){
                         clearTimeout(timeout);
                         switch(configobj.dataType)
                         {
@@ -738,17 +766,14 @@
                         configobj.success(data);
                         return;
                     }
-                    else
-                    {
-                        configobj.error();
-                    }
+                    else configobj.error&&configobj.error();
                 }
             };
-            if(type.toUpperCase()=="GET")
+            if(type.toUpperCase()==="GET")
             {
                 getRequest();
             }
-            else if(type.toUpperCase()=="POST")
+            else if(type.toUpperCase()==="POST")
             {
                 postRequest();
             }
@@ -785,6 +810,217 @@
                 }
                 else xhr.send();
             }
+        };
+        this.areaChose=function (provinceadd,cityadd,districtadd){
+            var mobile=this;
+            var citySelector = function () {
+                var province = mobile.one("#province");
+                var city = mobile.one("#city");
+                var district = mobile.one("#district");
+                var preProvince = mobile.one("#pre_province");
+                var preCity = mobile.one("#pre_city");
+                var preDistrict = mobile.one("#pre_district");
+
+                var jsonProvince = provinceadd;//当前数据文件地址
+                var jsonCity = cityadd;
+                var jsonDistrict = districtadd;
+                var hasDistrict = true;
+                var initProvince = "<option value=''>省</option>";
+                var initCity = "<option value=''>市</option>";
+                var initDistrict = "<option value=''>县</option>";
+                return {
+                    Init: function () {
+                        var that = this;
+                        that._LoadOptions(jsonProvince, preProvince, province, null, 0, initProvince);
+                        that._LoadOptions(jsonCity, preCity, city, province, 2, initCity);
+                        that._LoadOptions(jsonDistrict, preDistrict, district, city, 4, initDistrict);
+                        province.on("change",(function () {
+                            that._LoadOptions(jsonCity, preCity, city, province, 2, initCity);
+                        }));
+                        if (hasDistrict) {
+                            city.on("change",(function () {
+                                that._LoadOptions(jsonDistrict, preDistrict, district, city, 4, initDistrict);
+                            }));
+                            province.on("change",(function () {
+                                city.on("change",function(){});
+                            }));
+                        }
+                        province.on("change",function(){});
+                    },
+                    _LoadOptions: function (datapath, preobj, targetobj, parentobj, comparelen, initoption) {
+                        mobile.ajax({
+                            url: datapath,
+                            type: 'get',
+                            dataType: "json",
+                            success: function (r) {
+                                var t = ''; // t: html容器
+                                var s; // s: 选中标识
+                                var pre; // pre: 初始值
+                                if (preobj === undefined) {
+                                    pre = 0;
+                                } else {
+                                    pre = preobj.val();
+                                }
+                                for (var i = 0; i < r.length; i++) {
+                                    s = '';
+                                    if (comparelen === 0) {
+                                        if (pre !== "" && pre !== 0 && r[i].code === pre) {
+                                            s = ' selected=\"selected\" ';
+                                            pre = '';
+                                        }
+                                        t += '<option value=' + r[i].code + s + '>' + r[i].name + '</option>';
+                                    }
+                                    else {
+                                        var p = parentobj.val();
+                                        if (p.substring(0, comparelen) === r[i].code.substring(0, comparelen)) {
+                                            if (pre !== "" && pre !== 0 && r[i].code === pre) {
+                                                s = ' selected=\"selected\" ';
+                                                pre = '';
+                                            }
+                                            t += '<option value=' + r[i].code + s + '>' + r[i].name + '</option>';
+                                        }
+                                    }
+
+                                }
+                                if (initoption !== '') {
+                                    targetobj.html(initoption + t);
+                                } else {
+                                    targetobj.html(t);
+                                }
+
+                            },
+                            error:function(){
+                            },
+                            timeout:60
+                        });
+                    }
+                };
+            } ();
+            citySelector.Init();
+        };
+        this.doT= function () {
+            "use strict";
+            var doT = {
+                version: "1.0.3",
+                templateSettings: {
+                    evaluate:    /\{\{([\s\S]+?(\}?)+)\}\}/g,
+                    interpolate: /\{\{=([\s\S]+?)\}\}/g,
+                    encode:      /\{\{!([\s\S]+?)\}\}/g,
+                    use:         /\{\{#([\s\S]+?)\}\}/g,
+                    useParams:   /(^|[^\w$])def(?:\.|\[[\'\"])([\w$\.]+)(?:[\'\"]\])?\s*\:\s*([\w$\.]+|\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})/g,
+                    define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+                    defineParams:/^\s*([\w$]+):([\s\S]+)/,
+                    conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
+                    iterate:     /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
+                    varname:	"it",
+                    strip:		true,
+                    append:		true,
+                    selfcontained: false,
+                    doNotSkipEncoded: false
+                },
+                template: undefined, //fn, compile template
+                compile:  undefined  //fn, for express
+            }, _globals;
+            doT.encodeHTMLSource = function(doNotSkipEncoded) {
+                var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", '"': "&#34;", "'": "&#39;", "/": "&#47;" },
+                    matchHTML = doNotSkipEncoded ? /[&<>"'\/]/g : /&(?!#?\w+;)|<|>|"|'|\//g;
+                return function(code) {
+                    return code ? code.toString().replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : "";
+                };
+            };
+            _globals = (function(){ return this || (0,eval)("this"); }());
+            if (typeof module !== "undefined" && module.exports) {
+                module.exports = doT;
+            } else if (typeof define === "function" && define.amd) {
+                define(function(){return doT;});
+            } else {
+                _globals.doT = doT;
+            }
+            var startend = {
+                append: { start: "'+(",      end: ")+'",      startencode: "'+encodeHTML(" },
+                split:  { start: "';out+=(", end: ");out+='", startencode: "';out+=encodeHTML(" }
+            }, skip = /$^/;
+            function resolveDefs(c, block, def) {
+                return ((typeof block === "string") ? block : block.toString())
+                    .replace(c.define || skip, function(m, code, assign, value) {
+                        if (code.indexOf("def.") === 0) {
+                            code = code.substring(4);
+                        }
+                        if (!(code in def)) {
+                            if (assign === ":") {
+                                if (c.defineParams) value.replace(c.defineParams, function(m, param, v) {
+                                    def[code] = {arg: param, text: v};
+                                });
+                                if (!(code in def)) def[code]= value;
+                            } else {
+                                new Function("def", "def['"+code+"']=" + value)(def);
+                            }
+                        }
+                        return "";
+                    })
+                    .replace(c.use || skip, function(m, code) {
+                        if (c.useParams) code = code.replace(c.useParams, function(m, s, d, param) {
+                            if (def[d] && def[d].arg && param) {
+                                var rw = (d+":"+param).replace(/'|\\/g, "_");
+                                def.__exp = def.__exp || {};
+                                def.__exp[rw] = def[d].text.replace(new RegExp("(^|[^\\w$])" + def[d].arg + "([^\\w$])", "g"), "$1" + param + "$2");
+                                return s + "def.__exp['"+rw+"']";
+                            }
+                        });
+                        var v = new Function("def", "return " + code)(def);
+                        return v ? resolveDefs(c, v, def) : v;
+                    });
+            }
+            function unescape(code) {
+                return code.replace(/\\('|\\)/g, "$1").replace(/[\r\t\n]/g, " ");
+            }
+            doT.template = function(tmpl, c, def) {
+                c = c || doT.templateSettings;
+                var cse = c.append ? startend.append : startend.split, needhtmlencode, sid = 0, indv,
+                    str  = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
+                str = ("var out='" + (c.strip ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g," ")
+                    .replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g,""): str)
+                    .replace(/'|\\/g, "\\$&")
+                    .replace(c.interpolate || skip, function(m, code) {
+                        return cse.start + unescape(code) + cse.end;
+                    })
+                    .replace(c.encode || skip, function(m, code) {
+                        needhtmlencode = true;
+                        return cse.startencode + unescape(code) + cse.end;
+                    })
+                    .replace(c.conditional || skip, function(m, elsecase, code) {
+                        return elsecase ?
+                            (code ? "';}else if(" + unescape(code) + "){out+='" : "';}else{out+='") :
+                            (code ? "';if(" + unescape(code) + "){out+='" : "';}out+='");
+                    })
+                    .replace(c.iterate || skip, function(m, iterate, vname, iname) {
+                        if (!iterate) return "';} } out+='";
+                        sid+=1; indv=iname || "i"+sid; iterate=unescape(iterate);
+                        return "';var arr"+sid+"="+iterate+";if(arr"+sid+"){var "+vname+","+indv+"=-1,l"+sid+"=arr"+sid+".length-1;while("+indv+"<l"+sid+"){"
+                            +vname+"=arr"+sid+"["+indv+"+=1];out+='";
+                    })
+                    .replace(c.evaluate || skip, function(m, code) {
+                        return "';" + unescape(code) + "out+='";
+                    })
+                + "';return out;")
+                    .replace(/\n/g, "\\n").replace(/\t/g, '\\t').replace(/\r/g, "\\r")
+                    .replace(/(\s|;|\}|^|\{)out\+='';/g, '$1').replace(/\+''/g, "");
+                if (needhtmlencode) {
+                    if (!c.selfcontained && _globals && !_globals._encodeHTML) _globals._encodeHTML = doT.encodeHTMLSource(c.doNotSkipEncoded);
+                    str = "var encodeHTML = typeof _encodeHTML !== 'undefined' ? _encodeHTML : ("
+                        + doT.encodeHTMLSource.toString() + "(" + (c.doNotSkipEncoded || '') + "));"
+                        + str;
+                }
+                try {
+                    return new Function(c.varname, str);
+                } catch (e) {
+                    if (typeof console !== "undefined") console.log("Could not create a template function: " + str);
+                    throw e;
+                }
+            };
+            doT.compile = function(tmpl, def) {
+                return doT.template(tmpl, null, def);
+            };
         }
     }
     function deviceInfo(doc,win)
@@ -798,9 +1034,9 @@
     {
         this.metaelem=doc.querySelectorAll("meta");
         this.mobilemeta="<meta name='apple-mobile-web-app-capable' content='yes' \/>"+
-        "<meta name='apple-mobile-web-app-status-bar-style' content='black' \/>"+
-        "<meta content='telephone=no' name='format-detection' \/>"+
-        "<meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui' \/>"
+            "<meta name='apple-mobile-web-app-status-bar-style' content='black' \/>"+
+            "<meta content='telephone=no' name='format-detection' \/>"+
+            "<meta name='viewport' content='initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui' \/>"
         this.f=function(){
             for(var i=0;i<this.metaelem.length;i++)
             {
@@ -843,5 +1079,9 @@
     mobile.autoChange(640,100);
     mobile.readOnly=true;
     win.mobile=mobile;
+    win.onresize=function(){
+        mobile.autoChange(640,100);
+    };
+    mobile.doT();
 })(document,window);
 

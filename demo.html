@@ -46,7 +46,7 @@
             <span class="second"></span>
         </div>
         <script type="text/javascript">
-            mobile.countDown(new Date(2015,12,30,00,00),{"day":false,"hour":true,"minute":true,"second":true});
+            mobile.countDown(new Date(2015,10,26,14,00,00),{"day":true,"hour":true,"minute":true,"second":true});
         </script>
     </div>
     <div class="border">
@@ -96,6 +96,38 @@
     <div class="cc border">
         <input type="text" />
     </div>
+    <div class="doT">
+
+    </div>
+    <table>
+        <tr>
+            <td>省份</td>
+            <td>
+                <select name="" id="province">
+
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>市</td>
+            <td>
+                <select name="" id="city"></select>
+            </td>
+        </tr>
+        <tr>
+            <td>区/县</td>
+            <td>
+                <select name="" id="district"></select>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" value="340000" id="pre_province">
+    <input type="hidden" value="340800" id="pre_city">
+    <input type="hidden" value="340803" id="pre_district">
+    <div class="form">
+        <input type="text" name="name">
+        <input type="text" name="age">
+    </div>
     <div class="autoLoadMore" style="background: #333;padding: 20px;">
         <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1431572617553.jpg" alt="" class="one" style="height: 180px;">
         <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1441527782575.jpg" alt="" class="one" style="height: 180px;">
@@ -110,48 +142,63 @@
         <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
         <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="one" style="height: 180px;width: 100%;">
         <img data-src="http://b.zol-img.com.cn/desk/bizhi/image/6/1366x768/1447038190145.jpg" alt="" class="two" style="height: 180px;width: 100%;">
-
     </div>
-
-    <ul>
-        <li></li>
-    </ul>
+    <script id="dot" type="text/x-dot-template">
+        <p>name:{{=it.name}}</p>
+    </script>
     <script type="text/javascript">
     mobile.calendar(".cc input",{
         "format":"yy-MM-dd 周day"
     });
-//    mobile.lazyLoad(mobile.all(".one"));
-//    mobile.ajax({
-//        url:"/ajaxSource/ajax.txt",
-//        type:"post",
-//        dataType:"html",
-//        data:{b:11,c:'陈哲'},
-//        success: function(msg){
-//            alert( "Data Saved: " + msg.age );
-//            mobile.one("body").append(msg);
-//        },
-//        error: function(){
-//                alert( "ajax请求失败" );
-//            },
-//        timeout:60
-//
-//    });
+    mobile.one(".form").serializeJSON();
+    mobile.lazyLoad(mobile.all(".one"));
+    mobile.ajax({
+        url:"/ajaxSource/ajax.txt",
+        type:"post",
+        dataType:"html",
+        data:{b:11,c:'陈哲'},
+        success: function(msg){
+            alert( "Data Saved: " + msg.age );
+            mobile.one("body").append(msg);
+        },
+        error: function(){
+                alert( "ajax请求失败" );
+            },
+        timeout:60
+
+    });
     mobile.autoLoadMore({
         loadElement:".autoLoadMore",
         url:"/ajaxSource/ajax.txt",
         type:"get",
-        dataType:"html",
+        dataType:"text",
         data:{b:11,c:'cz'},
         success: function(msg){
 //            alert( "Data Saved: " + msg.age );
             mobile.one(".autoLoadMore").append(msg);
+            mobile.lazyLoad(mobile.all(".autoLoadMore img"));
         },
         error: function(){
             alert( "ajax请求失败" );
         },
         timeout:60
-
     });
+    var data={name:"chenzhe"};
+        var dot=mobile.one("#dot").html();
+        var template=doT.template(dot);
+    mobile.one(".doT").append(template(data));
+
+        mobile.dom("body").addEventListener("click",f,false);
+    var s=0;
+    mobile.dom("body").addEventListener("click",f,false);
+        function f(){
+//            alert(1)
+        }
+    function ff(){
+        alert(1)
+    }
+    mobile.areaChose("Lib/mobile-json-of-province.js","Lib/mobile-json-of-city.js","Lib/mobile-json-of-district.js");
+
     </script>
 </body>
 </html>
