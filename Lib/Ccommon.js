@@ -71,35 +71,40 @@
                     if(type==2)
                     {
                         alert_elemstr="<div class='common_alert'><p>"+alertStr+"</p> <div class='common_alert_sure'>确定</div> <div class='common_alert_cancel'>取消</div></div>"
+                        alert_bg_mask="<div class='alert_bg_mask'></div>";
                         $('body').append(alert_elemstr);
-                        $(".common_alert")[0].style.cssText="  box-shadow: 0px 0px 8px 3px #999;width:220px;padding:15px;position: fixed;z-index:1005;top:40%;border-radius: 6px 6px;text-align: center;background-color: #fff;color:#2d2d2d;border:1px solid #999;";
-                        $('.common_alert_sure')[0].style.cssText=" float:right; width: 82px;height: 30px;text-align: center;line-height: 30px;  background: url('/static/public/images/pic1.png') no-repeat 0px -30px;font-family: 'microsoft yahei';color: #fff;display: inline-block;margin:25px 16px 0 10px;"
-                        $('.common_alert_cancel')[0].style.cssText=" float:right; width: 82px;height: 30px;text-align: center;line-height: 30px;  background: url('/static/public/images/pic1.png') no-repeat 0px -30px;font-family: 'microsoft yahei';color: #fff;display: inline-block;margin:25px 16px 0 10px;"
+                        $('body').append(alert_bg_mask);
+                        $(".common_alert")[0].style.cssText="  box-shadow: 0px 0px 8px 3px #999;width:220px;padding:28px 15px;position: fixed;z-index:1005;top:40%;border-radius: 6px 6px;text-align: center;background-color: #fff;color:#2d2d2d;border:1px solid #999;";
+                        $('.common_alert_sure')[0].style.cssText="cursor:pointer; float:right; width: 82px;height: 30px;text-align: center;line-height: 30px;  background-color: #0DA2EA;border-radius: 6px 6px;font-family: 'microsoft yahei';color: #fff;display: inline-block;margin:25px 16px 0 10px;"
+                        $('.common_alert_cancel')[0].style.cssText="cursor:pointer; float:right; width: 82px;height: 30px;text-align: center;line-height: 30px;  background-color: #0DA2EA;border-radius: 6px 6px;font-family: 'microsoft yahei';color: #fff;display: inline-block;margin:25px 16px 0 10px;"
+                        $(".alert_bg_mask")[0].style.cssText="position:fixed;width:100%;height:100%;z-index:1000;top:0;left:0;background-color:rgba(255,255,255,0)";
                         var width=$(".common_alert")[0].offsetWidth;
                         $(".common_alert")[0].style.left=($("body")[0].offsetWidth-width)/2+"px";
                         $('.common_alert_cancel').click(function(){
                             $(".common_alert").remove();
+                            $(".alert_bg_mask").remove();
                         });
                     }
                     else if(type==1||type==null)
                     {
                         alert_elemstr="<div class='common_alert'><p>"+alertStr+"</p> <div class='common_alert_sure'>确定</div></div>";
+                        alert_bg_mask="<div class='alert_bg_mask'></div>";
                         $('body').append(alert_elemstr);
+                        $('body').append(alert_bg_mask);
                         $(".common_alert")[0].style.cssText="  box-shadow: 0px 0px 8px 3px #999;width:220px;padding:15px;position: fixed;z-index:1005;top:40%;border-radius: 6px 6px;text-align: center;background-color: #fff;color:#2d2d2d;border:1px solid #999;";
-                        $('.common_alert_sure')[0].style.cssText="  width: 82px;height: 30px;text-align: center;line-height: 30px;  background: url('/static/public/images/pic1.png') no-repeat 0px -30px;font-family: 'microsoft yahei';color: #fff;display: inline-block;margin:25px 16px 0 20px;"
+                        $('.common_alert_sure')[0].style.cssText="cursor:pointer;  width: 82px;height: 30px;text-align: center;line-height: 30px;  background-color: #0DA2EA;border-radius: 6px 6px;font-family: 'microsoft yahei';color: #fff;display: inline-block;margin:25px 16px 0 20px;"
+                        $(".alert_bg_mask")[0].style.cssText="position:fixed;width:100%;height:100%;z-index:1000;top:0;left:0;background-color:rgba(255,255,255,0)";
                         var width=$(".common_alert")[0].offsetWidth;
                         $(".common_alert")[0].style.left=($("body")[0].offsetWidth-width)/2+"px";
                     }
                     $('.common_alert_sure').click(function(){
                         $(".common_alert").remove();
+                        $(".alert_bg_mask").remove();
                         if(fun)
                         {
                             fun();
                         }
                     });
-                    $(".common_alert>div").on("mouseover",function(e){
-                        this.style.cursor="pointer";
-                    })
                 }
 
             }
